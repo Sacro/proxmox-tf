@@ -1,3 +1,6 @@
+[env]
+_.file = ".env"
+
 [tools]
 checkov = "latest"
 pre-commit = "latest"
