@@ -1,1 +1,2 @@
-.env filter=ageencrypt-terraform
+*.tfvars filter=ageencrypt-terraform
+*.tfvars.json filter=ageencrypt-terraform
