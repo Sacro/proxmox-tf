@@ -1,0 +1,11 @@
+[tools]
+checkov = "latest"
+pre-commit = "latest"
+terraform = "latest"
+terraform-docs = "latest"
+tflint = "latest"
+trivy = "latest"
+tfupdate = "latest"
+"npm:commitlint" = "latest"
+"npm:@commitlint/cli" = "latest"
+"npm:@commitlint/config-conventional" = "latest"
