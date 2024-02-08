@@ -1,25 +1,27 @@
-locals {
-  nodes         = ["proxmox01", "proxmox02", "proxmox03"]
-  talos_version = "v1.6.4"
+
+resource "proxmox_virtual_environment_download_file" "talos_img" {
+  for_each = setunion(local.controlplanes[*].node, local.workers[*].node)
+
+  node_name = each.value
+
+  content_type            = "iso"
+  datastore_id            = "local"
+  file_name               = "${local.talos_filename}-${local.talos_version}.img"
+  url                     = local.talos_url
+  decompression_algorithm = "zst"
+  overwrite               = false
 }
-
-resource "proxmox_virtual_environment_download_file" "talos_iso" {
-  for_each  = toset(local.nodes)
-  node_name = each.key
-
-  content_type = "iso"
-  datastore_id = "local"
-  file_name    = "metal-amd64.iso"
-  url          = "https://github.com/siderolabs/talos/releases/download/${local.talos_version}/metal-amd64.iso"
-}
-
 
 # https://www.talos.dev/v1.6/introduction/system-requirements/
 resource "proxmox_virtual_environment_vm" "talos_controlplane" {
-  for_each  = toset(local.nodes)
-  node_name = each.value
+  for_each = {
+    for index, item in local.controlplanes :
+    item.name => item
+  }
 
-  name = "talos-controlplane"
+  node_name = each.value.node
+
+  name = each.value.name
   tags = ["talos", "terraform"]
 
   agent {
@@ -32,23 +34,48 @@ resource "proxmox_virtual_environment_vm" "talos_controlplane" {
     units = 200
   }
 
-  cdrom {
-    enabled = true
-    file_id = proxmox_virtual_environment_download_file.talos_iso[each.value].id
+  disk {
+    datastore_id = "local-lvm"
+    file_id      = proxmox_virtual_environment_download_file.talos_img[each.value.node].id
+    interface    = "scsi0"
+    discard      = "on"
+    size         = 10
   }
 
   disk {
     datastore_id = "local-lvm"
     discard      = "on"
     file_format  = "raw"
-    interface    = "scsi0"
+    interface    = "scsi1"
     size         = 100
     ssd          = true
   }
 
+  disk {
+    datastore_id = "local-lvm"
+    discard      = "on"
+    file_format  = "raw"
+    interface    = "scsi2"
+    size         = 100
+    ssd          = true
+  }
+
+  initialization {
+    dns {
+      domain  = local.domain
+      servers = [local.gateway]
+    }
+
+    ip_config {
+      ipv4 {
+        address = "${each.value.address}/${local.subnet}"
+        gateway = local.gateway
+      }
+    }
+  }
+
   memory {
     dedicated = 2048
-    floating  = 4096 - 2048
   }
 
   network_device {}
@@ -56,13 +83,21 @@ resource "proxmox_virtual_environment_vm" "talos_controlplane" {
   operating_system {
     type = "l26"
   }
+
+  lifecycle {
+    ignore_changes = [agent]
+  }
 }
 
 resource "proxmox_virtual_environment_vm" "talos_worker" {
-  for_each  = toset(local.nodes)
-  node_name = each.value
+  for_each = {
+    for index, item in local.workers :
+    item.name => item
+  }
 
-  name = "talos-worker"
+  node_name = each.value.node
+
+  name = each.value.name
   tags = ["talos", "terraform"]
 
   agent {
@@ -75,23 +110,43 @@ resource "proxmox_virtual_environment_vm" "talos_worker" {
     units = 100 // default, but should mean control plane isn't locked out
   }
 
-  cdrom {
-    enabled = true
-    file_id = proxmox_virtual_environment_download_file.talos_iso[each.value].id
+  disk {
+    datastore_id = "local-lvm"
+    file_id      = proxmox_virtual_environment_download_file.talos_img[each.value.node].id
+    interface    = "scsi0"
+    discard      = "on"
+    size         = 10
   }
 
   disk {
     datastore_id = "local-lvm"
     discard      = "on"
     file_format  = "raw"
-    interface    = "scsi0"
+    interface    = "scsi1"
     size         = 100
     ssd          = true
   }
 
+  disk {
+    datastore_id = "local-lvm"
+    discard      = "on"
+    file_format  = "raw"
+    interface    = "scsi2"
+    size         = 100
+    ssd          = true
+  }
+
+  initialization {
+    ip_config {
+      ipv4 {
+        address = "${each.value.address}/${local.subnet}"
+        gateway = local.gateway
+      }
+    }
+  }
+
   memory {
-    dedicated = 1024
-    floating  = 8192 - 1024
+    dedicated = 8192
   }
 
   network_device {}
@@ -99,4 +154,49 @@ resource "proxmox_virtual_environment_vm" "talos_worker" {
   operating_system {
     type = "l26"
   }
+
+  lifecycle {
+    ignore_changes = [agent]
+  }
+}
+
+resource "talos_machine_configuration_apply" "control_plane" {
+  for_each = {
+    for index, item in local.controlplanes :
+    item.name => item
+  }
+
+  depends_on = [proxmox_virtual_environment_vm.talos_controlplane]
+
+  endpoint                    = each.value.address
+  node                        = each.value.name
+  machine_configuration_input = data.talos_machine_configuration.control_plane.machine_configuration
+  client_configuration        = talos_machine_secrets.secrets.client_configuration
+  config_patches = [
+    yamlencode(module.deepmerge-controlplane.merged)
+  ]
+}
+
+resource "talos_machine_configuration_apply" "worker" {
+  for_each = {
+    for index, item in local.workers :
+    item.name => item
+  }
+
+  depends_on = [proxmox_virtual_environment_vm.talos_worker]
+
+  endpoint                    = each.value.address
+  node                        = each.value.name
+  machine_configuration_input = data.talos_machine_configuration.worker.machine_configuration
+  client_configuration        = talos_machine_secrets.secrets.client_configuration
+  config_patches = [
+    yamlencode(module.deepmerge-worker.merged),
+  ]
+}
+
+resource "talos_machine_bootstrap" "bootstrap" {
+  depends_on           = [talos_machine_configuration_apply.control_plane[0]]
+  node                 = tolist(local.controlplanes)[0].address
+  endpoint             = tolist(local.controlplanes)[0].address
+  client_configuration = talos_machine_secrets.secrets.client_configuration
 }

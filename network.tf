@@ -1,6 +1,6 @@
 locals {
   gateway = "192.168.15.254"
-  nodes = [{
+  nodes = toset([{
     name    = "proxmox01"
     address = "192.168.15.101/24"
     }, {
@@ -9,7 +9,7 @@ locals {
     }, {
     name    = "proxmox03"
     address = "192.168.15.103/24"
-  }]
+  }])
   ports = ["enp1s0"]
 }
 
