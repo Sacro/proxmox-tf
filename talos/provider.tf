@@ -1,5 +1,13 @@
 terraform {
   required_providers {
+    flux = {
+      source  = "fluxcd/flux"
+      version = "~>1.2.3"
+    }
+    github = {
+      source  = "integrations/github"
+      version = "~>5.18.0"
+    }
     proxmox = {
       source  = "bpg/proxmox"
       version = "~>0.46.1"
@@ -8,29 +16,32 @@ terraform {
       source  = "siderolabs/talos"
       version = "~>0.4.0"
     }
+    tls = {
+      source  = "hashicorp/tls"
+      version = "4.0.5"
+    }
   }
 
   required_version = "1.7.3"
 }
 
-module "deepmerge-controlplane" {
-  # source  = "Invicton-Labs/deepmerge/null"
-  # version = "~>0.1.5"
-  source = "git::https://github.com/Invicton-Labs/terraform-null-deepmerge.git?ref=af2a0dbf5a5c4cace8e4b9f422be2a8ac18f7d38" # commit hash of version 0.1.5
-
-  maps = [
-    local.talos_config,
-    local.talos_controlplane_config
-  ]
+provider "flux" {
+  kubernetes = {
+    host                   = local.cluster_vip
+    client_certificate     = base64decode(data.talos_cluster_kubeconfig.kubeconfig.client_configuration.client_certificate)
+    client_key             = base64decode(data.talos_cluster_kubeconfig.kubeconfig.client_configuration.client_key)
+    cluster_ca_certificate = base64decode(data.talos_cluster_kubeconfig.kubeconfig.client_configuration.ca_certificate)
+  }
+  git = {
+    url = "ssh://git@github.com/${var.github_org}/${var.github_repository}.git"
+    ssh = {
+      username    = "git"
+      private_key = tls_private_key.flux.private_key_pem
+    }
+  }
 }
 
-module "deepmerge-worker" {
-  # source  = "Invicton-Labs/deepmerge/null"
-  # version = "~>0.1.5"
-  source = "git::https://github.com/Invicton-Labs/terraform-null-deepmerge.git?ref=af2a0dbf5a5c4cace8e4b9f422be2a8ac18f7d38" # commit hash of version 0.1.5
-
-  maps = [
-    local.talos_config,
-    local.talos_worker_config
-  ]
+provider "github" {
+  owner = var.github_org
+  token = var.github_token
 }

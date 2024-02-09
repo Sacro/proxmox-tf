@@ -79,7 +79,6 @@ locals {
         nameservers = [
           local.gateway
         ]
-
       }
       time = {
         servers = [
@@ -123,7 +122,6 @@ resource "talos_machine_secrets" "secrets" {
   }
 }
 
-
 data "talos_machine_configuration" "control_plane" {
   cluster_endpoint = local.cluster_endpoint
   cluster_name     = local.cluster_name
@@ -143,4 +141,33 @@ data "talos_client_configuration" "client" {
   cluster_name         = local.cluster_name
   endpoints            = setunion([local.cluster_vip], local.controlplanes[*].address)
   nodes                = setunion(local.controlplanes[*].address, local.workers[*].address)
+}
+
+resource "tls_private_key" "flux" {
+  algorithm   = "ECDSA"
+  ecdsa_curve = "P256"
+}
+
+resource "github_repository" "flux" {
+  name                 = var.github_repository
+  vulnerability_alerts = true
+  visibility           = "private"
+}
+
+resource "github_branch_protection" "flux" {
+  repository_id = github_repository.flux.node_id
+
+  pattern = "main"
+  required_pull_request_reviews {
+    required_approving_review_count = 2
+  }
+  require_signed_commits = true
+}
+
+resource "github_repository_deploy_key" "flux" {
+  depends_on = [github_repository.flux]
+  title      = "Flux"
+  repository = github_repository.flux.name
+  key        = tls_private_key.flux.public_key_openssh
+  read_only  = false
 }

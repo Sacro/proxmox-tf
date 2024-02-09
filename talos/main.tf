@@ -200,3 +200,14 @@ resource "talos_machine_bootstrap" "bootstrap" {
   endpoint             = tolist(local.controlplanes)[0].address
   client_configuration = talos_machine_secrets.secrets.client_configuration
 }
+
+data "talos_cluster_kubeconfig" "kubeconfig" {
+  depends_on           = [talos_machine_bootstrap.bootstrap]
+  client_configuration = talos_machine_secrets.secrets.client_configuration
+  node                 = tolist(local.controlplanes)[0].address
+}
+
+resource "flux_bootstrap_git" "bootstrap" {
+  depends_on = [github_repository_deploy_key.flux, data.talos_cluster_kubeconfig.kubeconfig]
+  path       = "clusters/${local.cluster_name}"
+}

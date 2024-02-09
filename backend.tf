@@ -19,7 +19,3 @@ data "terraform_remote_state" "state" {
     password = var.github_token
   }
 }
-
-variable "github_token" {
-  type = string
-}
