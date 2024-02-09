@@ -151,7 +151,7 @@ resource "tls_private_key" "flux" {
 resource "github_repository" "flux" {
   name                 = var.github_repository
   vulnerability_alerts = true
-  visibility           = "private"
+  visibility           = "public"
 }
 
 resource "github_branch_protection" "flux" {
