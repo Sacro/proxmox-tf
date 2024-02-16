@@ -11,3 +11,19 @@ tfupdate = "latest"
 "npm:commitlint" = "latest"
 "npm:@commitlint/cli" = "latest"
 "npm:@commitlint/config-conventional" = "latest"
+
+[tasks.updateCiliumHelmTemplate]
+description = "Update Cilium helm template"
+run = """
+helm template \
+    cilium \
+    cilium/cilium \
+    --version 1.15.0 \
+    --namespace kube-system \
+    --set ipam.mode=kubernetes \
+    --set=kubeProxyReplacement=disabled \
+    --set=securityContext.capabilities.ciliumAgent="{CHOWN,KILL,NET_ADMIN,NET_RAW,IPC_LOCK,SYS_ADMIN,SYS_RESOURCE,DAC_OVERRIDE,FOWNER,SETGID,SETUID}" \
+    --set=securityContext.capabilities.cleanCiliumState="{NET_ADMIN,SYS_ADMIN,SYS_RESOURCE}" \
+    --set=cgroup.autoMount.enabled=false \
+    --set=cgroup.hostRoot=/sys/fs/cgroup > talos/cilium.yaml
+"""

@@ -97,7 +97,38 @@ locals {
       ]
     }
     machine = {
+      features = {
+        kubePrism = {
+          enabled = true,
+          port    = 7445
+        }
+      }
+      inlineManifests = [{
+        name     = "cilium"
+        contents = <<-EOT
+        ---
+        # Source: cilium/templates/cilium-agent/serviceaccount.yaml
+        apiVersion: v1
+        kind: ServiceAccount
+        metadata:
+          name: "cilium"
+          namespace: kube-system
+        ---
+        # Source: cilium/templates/cilium-operator/serviceaccount.yaml
+        apiVersion: v1
+        kind: ServiceAccount
+        -> Your cilium.yaml file will be pretty long....
+        EOT
+
+      }]
       network = {
+        cni = {
+          name = "none"
+        }
+        proxy = {
+          disabled = true
+        }
+
         interfaces = [{
           interface = "eth0"
           vip = {
