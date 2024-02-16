@@ -1,6 +1,7 @@
 [tools]
 checkov = "latest"
 flux2 = "latest"
+helm = "latest"
 k9s = "latest"
 pre-commit = "latest"
 terraform = "latest"
