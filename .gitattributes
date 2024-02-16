@@ -1,2 +1,3 @@
 *.tfvars filter=ageencrypt-terraform
 *.tfvars.json filter=ageencrypt-terraform
+talos/cilium.yaml filter=ageencrypt-terraform

@@ -95,6 +95,18 @@ locals {
         "https://raw.githubusercontent.com/alex1989hu/kubelet-serving-cert-approver/main/deploy/standalone-install.yaml",
         "https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml"
       ]
+      inlineManifests = [{
+        name     = "cilium"
+        contents = templatefile("${path.module}/cilium.yaml", {})
+      }]
+      network = {
+        cni = {
+          name = "none"
+        }
+      }
+      proxy = {
+        disabled = true
+      }
     }
     machine = {
       features = {
@@ -103,32 +115,7 @@ locals {
           port    = 7445
         }
       }
-      inlineManifests = [{
-        name     = "cilium"
-        contents = <<-EOT
-        ---
-        # Source: cilium/templates/cilium-agent/serviceaccount.yaml
-        apiVersion: v1
-        kind: ServiceAccount
-        metadata:
-          name: "cilium"
-          namespace: kube-system
-        ---
-        # Source: cilium/templates/cilium-operator/serviceaccount.yaml
-        apiVersion: v1
-        kind: ServiceAccount
-        -> Your cilium.yaml file will be pretty long....
-        EOT
-
-      }]
       network = {
-        cni = {
-          name = "none"
-        }
-        proxy = {
-          disabled = true
-        }
-
         interfaces = [{
           interface = "eth0"
           vip = {
