@@ -1,5 +1,5 @@
 locals {
-  controlplanes = toset([{
+  proxmox_controlplanes = toset([{
     node    = "proxmox01"
     name    = "taloscp01"
     address = "192.168.15.161"
@@ -13,7 +13,9 @@ locals {
     address = "192.168.15.181"
   }])
 
-  workers = toset([{
+  controlplanes = setunion(local.proxmox_controlplanes)
+
+  proxmox_workers = toset([{
     node    = "proxmox01"
     name    = "talosw01"
     address = "192.168.15.211"
@@ -27,6 +29,26 @@ locals {
     address = "192.168.15.231"
   }])
 
+  turingpi_workers = toset([{
+    name         = "talostpi01"
+    address      = "192.168.15.241"
+    dhcp_address = "192.168.15.108"
+    }, {
+    name         = "talostpi02"
+    address      = "192.168.15.242"
+    dhcp_address = "192.168.15.83"
+    }, {
+    name         = "talostpi03"
+    address      = "192.168.15.243"
+    dhcp_address = "192.168.15.84"
+    }, {
+    name         = "talostpi04"
+    address      = "192.168.15.244"
+    dhcp_address = "192.168.15.110"
+  }])
+
+  workers = setunion(local.proxmox_workers, local.turingpi_workers)
+
   domain  = "cluster.benwoodward.cloud"
   gateway = "192.168.15.254"
   subnet  = "24"
@@ -36,11 +58,11 @@ locals {
     image = "ghcr.io/siderolabs/qemu-guest-agent:8.1.3@sha256:426f6c62fba7810c5e73ab251b43d6a5ab68a4066d8bb0b05745905e5f1d61fc"
   }])
 
-  talos_filename = "nocloud-amd64.raw.xz"
-  talos_version  = "v1.6.4"
-  talos_url      = "https://github.com/siderolabs/talos/releases/download/${local.talos_version}/${local.talos_filename}"
+  talos_amd64_filename = "nocloud-amd64.raw.xz"
+  talos_version        = "v1.6.4"
+  talos_amd64_url      = "https://github.com/siderolabs/talos/releases/download/${local.talos_version}/${local.talos_amd64_filename}"
 
-  talos_config = {
+  talos_proxmox_config = {
     machine = {
       disks = [{
         device = "/dev/sdc"
@@ -48,22 +70,11 @@ locals {
           mountpoint = "/var/mnt"
         }]
       }]
-      files = [{
-        content = <<-EOT
-        [metrics]
-          address = "0.0.0.0:11234"
-        EOT
-        path    = "/etc/cri/conf.d/20-customization.part"
-        op      = "create"
-      }]
       install = {
         disk       = "/dev/sdb"
         extensions = local.talos_extensions
       }
       kubelet = {
-        extraArgs = {
-          rotate-server-certificates = true
-        }
         extraMounts = [{
           source      = "/var/mnt"
           destination = "/var/mnt"
@@ -74,6 +85,32 @@ locals {
             "rw"
           ]
         }]
+      }
+    }
+  }
+
+  talos_turingpi_config = {
+    machine = {
+      install = {
+        disk = "/dev/mmcblk0"
+      }
+    }
+  }
+
+  talos_config = {
+    machine = {
+      files = [{
+        content = <<-EOT
+        [metrics]
+          address = "0.0.0.0:11234"
+        EOT
+        path    = "/etc/cri/conf.d/20-customization.part"
+        op      = "create"
+      }]
+      kubelet = {
+        extraArgs = {
+          rotate-server-certificates = true
+        }
       }
       network = {
         nameservers = [
@@ -158,7 +195,7 @@ data "talos_client_configuration" "client" {
   client_configuration = talos_machine_secrets.secrets.client_configuration
   cluster_name         = local.cluster_name
   endpoints            = setunion([local.cluster_vip], local.controlplanes[*].address)
-  nodes                = setunion(local.controlplanes[*].address, local.workers[*].address)
+  nodes                = setunion(local.proxmox_controlplanes[*].address, local.proxmox_workers[*].address)
 }
 
 resource "tls_private_key" "flux" {
