@@ -98,6 +98,16 @@ locals {
   }
 
   talos_config = {
+    cluster = {
+      network = {
+        cni = {
+          name = "none"
+        }
+      }
+      proxy = {
+        disabled = true
+      }
+    }
     machine = {
       files = [{
         content = <<-EOT
@@ -136,14 +146,6 @@ locals {
         name     = "cilium"
         contents = templatefile("${path.module}/cilium.yaml", {})
       }]
-      network = {
-        cni = {
-          name = "none"
-        }
-      }
-      proxy = {
-        disabled = true
-      }
     }
     machine = {
       features = {
