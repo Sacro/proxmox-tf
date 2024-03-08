@@ -85,7 +85,7 @@ resource "proxmox_virtual_environment_vm" "talos_controlplane" {
   }
 
   lifecycle {
-    ignore_changes = [agent]
+    ignore_changes = [agent, disk[0].file_id]
   }
 }
 
@@ -156,7 +156,7 @@ resource "proxmox_virtual_environment_vm" "talos_worker" {
   }
 
   lifecycle {
-    ignore_changes = [agent]
+    ignore_changes = [agent, disk[0].file_id]
   }
 }
 
@@ -201,7 +201,7 @@ resource "talos_machine_configuration_apply" "turingpi_worker" {
   }
 
   endpoint                    = each.value.dhcp_address
-  node                        = each.value.name
+  node                        = each.value.dhcp_address
   machine_configuration_input = data.talos_machine_configuration.worker.machine_configuration
   client_configuration        = talos_machine_secrets.secrets.client_configuration
   config_patches = [

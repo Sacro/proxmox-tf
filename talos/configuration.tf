@@ -31,20 +31,20 @@ locals {
 
   turingpi_workers = toset([{
     name         = "talostpi01"
-    address      = "192.168.15.241"
-    dhcp_address = "192.168.15.108"
+    address      = "192.168.15.32"
+    dhcp_address = "192.168.15.32"
     }, {
     name         = "talostpi02"
-    address      = "192.168.15.242"
-    dhcp_address = "192.168.15.83"
+    address      = "192.168.15.34"
+    dhcp_address = "192.168.15.34"
     }, {
     name         = "talostpi03"
-    address      = "192.168.15.243"
-    dhcp_address = "192.168.15.84"
+    address      = "192.168.15.35"
+    dhcp_address = "192.168.15.35"
     }, {
     name         = "talostpi04"
-    address      = "192.168.15.244"
-    dhcp_address = "192.168.15.110"
+    address      = "192.168.15.36"
+    dhcp_address = "192.168.15.36"
   }])
 
   workers = setunion(local.proxmox_workers, local.turingpi_workers)
@@ -59,7 +59,7 @@ locals {
   }])
 
   talos_amd64_filename = "nocloud-amd64.raw.xz"
-  talos_version        = "v1.6.4"
+  talos_version        = "v1.6.6"
   talos_amd64_url      = "https://github.com/siderolabs/talos/releases/download/${local.talos_version}/${local.talos_amd64_filename}"
 
   talos_proxmox_config = {
@@ -176,6 +176,9 @@ resource "talos_machine_secrets" "secrets" {
   talos_version = local.talos_version
   lifecycle {
     prevent_destroy = true
+    ignore_changes = [
+      talos_version
+    ]
   }
 }
 
