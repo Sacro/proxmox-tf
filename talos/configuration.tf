@@ -145,6 +145,7 @@ locals {
       }]
       kubelet = {
         extraArgs = {
+          cloud-provider : "external"
           rotate-server-certificates = true
         }
       }
@@ -178,6 +179,15 @@ locals {
         kubePrism = {
           enabled = true,
           port    = 7445
+        }
+        kubernetesTalosAPIAccess = {
+          enabled = true,
+          allowedRoles = [
+            "os:reader"
+          ]
+          allowedKubernetesNamespaces : [
+            "kube-system"
+          ]
         }
       }
       network = {
