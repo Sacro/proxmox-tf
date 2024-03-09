@@ -67,6 +67,9 @@ locals {
     # {
     #   image = "ghcr.io/siderolabs/tailscale:1.54.0@sha256:bcbeafd1f95053d5b2668f9a486601a24a0f61efaf7fe2cf0da74ef3aaa5b4b2"
     # }
+    {
+      image = "ghcr.io/siderolabs/util-linux-tools:v1.6.6@sha256:76b0a6f1800e1430d7fd90fddb38d814386580d49d75bacad4d2fd4ba188d435"
+    }
   ])
 
   # crane export ghcr.io/nberlee/extensions:v<talos-version> | tar x -O image-digests | grep <extension-name>
@@ -85,20 +88,15 @@ locals {
 
   talos_proxmox_config = {
     machine = {
-      disks = [{
-        device = "/dev/sdc"
-        partitions : [{
-          mountpoint = "/var/mnt"
-        }]
-      }]
+      disks = []
       install = {
         disk       = "/dev/sdb"
         extensions = local.talos_proxmox_extensions
       }
       kubelet = {
         extraMounts = [{
-          source      = "/var/mnt"
-          destination = "/var/mnt"
+          source      = "/var/lib/longhorn"
+          destination = "/var/lib/longhorn"
           type : "bind"
           options : [
             "bind",
