@@ -105,7 +105,7 @@ resource "proxmox_virtual_environment_vm" "talos_worker" {
   }
 
   cpu {
-    cores = 2
+    cores = 4
     type  = "x86-64-v2-AES"
     units = 100 // default, but should mean control plane isn't locked out
   }
