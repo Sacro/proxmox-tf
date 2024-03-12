@@ -34,20 +34,20 @@ locals {
     address      = "192.168.15.32"
     dhcp_address = "192.168.15.32"
     }, {
-    name         = "talostpi02"
+    name         = "talos-fxz-ghr"
     address      = "192.168.15.34"
     dhcp_address = "192.168.15.34"
     }, {
     name         = "talostpi03"
-    address      = "192.168.15.35"
-    dhcp_address = "192.168.15.35"
+    address      = "192.168.15.43"
+    dhcp_address = "192.168.15.43"
     }, {
     name         = "talostpi04"
-    address      = "192.168.15.36"
-    dhcp_address = "192.168.15.36"
+    address      = "192.168.15.44"
+    dhcp_address = "192.168.15.44"
   }])
 
-  workers = setunion(local.proxmox_workers, local.turingpi_workers)
+  # workers = setunion(local.proxmox_workers, local.turingpi_workers)
 
   domain  = "cluster.benwoodward.cloud"
   gateway = "192.168.15.254"
@@ -125,6 +125,12 @@ locals {
 
   talos_config = {
     cluster = {
+      externalCloudProvider = {
+        enabled = true
+        manifests = [
+          "https://raw.githubusercontent.com/sergelogvinov/proxmox-csi-plugin/main/docs/deploy/proxmox-csi-plugin-talos.yml"
+        ]
+      }
       network = {
         cni = {
           name = "none"
