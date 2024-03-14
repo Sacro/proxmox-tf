@@ -34,6 +34,7 @@ resource "proxmox_virtual_environment_vm" "talos_controlplane" {
     units = 200
   }
 
+  # Holds the installer
   disk {
     datastore_id = "local-lvm"
     file_id      = proxmox_virtual_environment_download_file.talos_img[each.value.node].id
@@ -42,20 +43,12 @@ resource "proxmox_virtual_environment_vm" "talos_controlplane" {
     size         = 10
   }
 
+  # Holds the OS
   disk {
     datastore_id = "local-lvm"
     discard      = "on"
     file_format  = "raw"
     interface    = "scsi1"
-    size         = 100
-    ssd          = true
-  }
-
-  disk {
-    datastore_id = "local-lvm"
-    discard      = "on"
-    file_format  = "raw"
-    interface    = "scsi2"
     size         = 100
     ssd          = true
   }
@@ -110,6 +103,7 @@ resource "proxmox_virtual_environment_vm" "talos_worker" {
     units = 100 // default, but should mean control plane isn't locked out
   }
 
+  # Holds the installer
   disk {
     datastore_id = "local-lvm"
     file_id      = proxmox_virtual_environment_download_file.talos_img[each.value.node].id
@@ -118,6 +112,7 @@ resource "proxmox_virtual_environment_vm" "talos_worker" {
     size         = 10
   }
 
+  # Holds the OS
   disk {
     datastore_id = "local-lvm"
     discard      = "on"
@@ -127,6 +122,7 @@ resource "proxmox_virtual_environment_vm" "talos_worker" {
     ssd          = true
   }
 
+  # Storage partition
   disk {
     datastore_id = "local-lvm"
     discard      = "on"
@@ -156,7 +152,7 @@ resource "proxmox_virtual_environment_vm" "talos_worker" {
   }
 
   lifecycle {
-    ignore_changes = [agent, disk[0].file_id]
+    ignore_changes = [agent, disk]
   }
 }
 

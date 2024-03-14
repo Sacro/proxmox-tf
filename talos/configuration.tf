@@ -59,17 +59,11 @@ locals {
       image = "ghcr.io/siderolabs/binfmt-misc:v1.6.6@sha256:37865e0c2b4f6d15052a0cac5ff331ba4dad7d9beb7e9b8bdb198425f995b04e"
     },
     {
-      image = "ghcr.io/siderolabs/iscsi-tools:v0.1.4@sha256:7a775b029140e9f7c0bcecd5f31ebe2f4a6bfbfa6e1976bd8334a885b76862ba"
-    },
-    {
       image = "ghcr.io/siderolabs/qemu-guest-agent:8.1.3@sha256:426f6c62fba7810c5e73ab251b43d6a5ab68a4066d8bb0b05745905e5f1d61fc"
     },
     # {
     #   image = "ghcr.io/siderolabs/tailscale:1.54.0@sha256:bcbeafd1f95053d5b2668f9a486601a24a0f61efaf7fe2cf0da74ef3aaa5b4b2"
     # }
-    {
-      image = "ghcr.io/siderolabs/util-linux-tools:v1.6.6@sha256:76b0a6f1800e1430d7fd90fddb38d814386580d49d75bacad4d2fd4ba188d435"
-    }
   ])
 
   # crane export ghcr.io/nberlee/extensions:v<talos-version> | tar x -O image-digests | grep <extension-name>
@@ -82,6 +76,15 @@ locals {
     }
   ])
 
+  talos_extensions = toset([
+    {
+      image = "ghcr.io/siderolabs/iscsi-tools:v0.1.4@sha256:7a775b029140e9f7c0bcecd5f31ebe2f4a6bfbfa6e1976bd8334a885b76862ba"
+    },
+    {
+      image = "ghcr.io/siderolabs/util-linux-tools:v1.6.6@sha256:76b0a6f1800e1430d7fd90fddb38d814386580d49d75bacad4d2fd4ba188d435"
+    }
+  ])
+
   talos_amd64_filename = "nocloud-amd64.raw.xz"
   talos_version        = "v1.6.6"
   talos_amd64_url      = "https://github.com/siderolabs/talos/releases/download/${local.talos_version}/${local.talos_amd64_filename}"
@@ -91,7 +94,7 @@ locals {
       disks = []
       install = {
         disk       = "/dev/sdb"
-        extensions = local.talos_proxmox_extensions
+        extensions = setunion(local.talos_extensions, local.talos_proxmox_extensions)
       }
       kubelet = {
         extraMounts = [{
@@ -112,7 +115,7 @@ locals {
     machine = {
       install = {
         disk       = "/dev/mmcblk0"
-        extensions = local.talos_turingpi_extensions
+        extensions = setunion(local.talos_extensions, local.talos_turingpi_extensions)
       }
       kernel = {
         modules = [{
