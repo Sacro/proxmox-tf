@@ -26,3 +26,5 @@ repos:
       - id: commitlint
         stages: [commit-msg]
         additional_dependencies: ['@commitlint/config-conventional']
+
+exclude: "talos/cilium.yaml"
