@@ -113,6 +113,12 @@ locals {
 
   talos_turingpi_config = {
     machine = {
+      disks = [{
+        device = "/dev/nvme0n1"
+        partitions = [{
+          mountpoint = "/var/lib/longhorn"
+        }]
+      }]
       install = {
         disk       = "/dev/mmcblk0"
         extensions = setunion(local.talos_extensions, local.talos_turingpi_extensions)
