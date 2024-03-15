@@ -27,10 +27,10 @@ terraform {
 
 provider "flux" {
   kubernetes = {
-    host                   = "https://cluster.benwoodward.cloud:6443"
-    client_certificate     = base64decode(data.talos_cluster_kubeconfig.kubeconfig.client_configuration.client_certificate)
-    client_key             = base64decode(data.talos_cluster_kubeconfig.kubeconfig.client_configuration.client_key)
-    cluster_ca_certificate = base64decode(data.talos_cluster_kubeconfig.kubeconfig.client_configuration.ca_certificate)
+    host                   = data.talos_cluster_kubeconfig.kubeconfig.kubernetes_client_configuration.host
+    client_certificate     = base64decode(data.talos_cluster_kubeconfig.kubeconfig.kubernetes_client_configuration.client_certificate)
+    client_key             = base64decode(data.talos_cluster_kubeconfig.kubeconfig.kubernetes_client_configuration.client_key)
+    cluster_ca_certificate = base64decode(data.talos_cluster_kubeconfig.kubeconfig.kubernetes_client_configuration.ca_certificate)
   }
   git = {
     url = "ssh://git@github.com/${var.github_org}/${var.github_repository}.git"

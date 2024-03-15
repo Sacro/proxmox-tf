@@ -148,6 +148,7 @@ locals {
       externalCloudProvider = {
         enabled = true
         manifests = [
+          "https://raw.githubusercontent.com/siderolabs/talos-cloud-controller-manager/main/docs/deploy/cloud-controller-manager.yml",
           "https://raw.githubusercontent.com/sergelogvinov/proxmox-csi-plugin/main/docs/deploy/proxmox-csi-plugin-talos.yml"
         ]
       }
