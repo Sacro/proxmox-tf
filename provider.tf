@@ -33,7 +33,7 @@ provider "proxmox" {
 
   ssh {
     agent    = false
-    username = var.proxmox_username
+    username = "root"
     password = var.proxmox_password
   }
 }

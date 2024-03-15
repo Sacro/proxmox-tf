@@ -18,6 +18,7 @@ module "deepmerge-worker-proxmox" {
   maps = [
     local.talos_config,
     local.talos_proxmox_config,
+    local.talos_proxmox_worker_config,
     local.talos_worker_config
   ]
 }

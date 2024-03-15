@@ -27,7 +27,7 @@ terraform {
 
 provider "flux" {
   kubernetes = {
-    host                   = local.cluster_vip
+    host                   = "https://cluster.benwoodward.cloud:6443"
     client_certificate     = base64decode(data.talos_cluster_kubeconfig.kubeconfig.client_configuration.client_certificate)
     client_key             = base64decode(data.talos_cluster_kubeconfig.kubeconfig.client_configuration.client_key)
     cluster_ca_certificate = base64decode(data.talos_cluster_kubeconfig.kubeconfig.client_configuration.ca_certificate)

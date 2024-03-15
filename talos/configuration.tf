@@ -111,6 +111,17 @@ locals {
     }
   }
 
+  talos_proxmox_worker_config = {
+    machine = {
+      disks = [{
+        device = "/dev/sdc"
+        partitions = [{
+          mountpoint = "/var/lib/longhorn"
+        }]
+      }]
+    }
+  }
+
   talos_turingpi_config = {
     machine = {
       disks = [{
@@ -257,12 +268,18 @@ data "talos_client_configuration" "client" {
 resource "tls_private_key" "flux" {
   algorithm   = "ECDSA"
   ecdsa_curve = "P256"
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "github_repository" "flux" {
   name                 = var.github_repository
   vulnerability_alerts = true
   visibility           = "public"
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "github_branch_protection" "flux" {
@@ -273,6 +290,9 @@ resource "github_branch_protection" "flux" {
     required_approving_review_count = 2
   }
   require_signed_commits = true
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "github_repository_deploy_key" "flux" {
@@ -281,4 +301,7 @@ resource "github_repository_deploy_key" "flux" {
   repository = github_repository.flux.name
   key        = tls_private_key.flux.public_key_openssh
   read_only  = false
+  lifecycle {
+    prevent_destroy = true
+  }
 }
