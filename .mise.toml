@@ -24,7 +24,7 @@ run = """
 helm template \
     cilium \
     cilium/cilium \
-    --version 1.15.0 \
+    --version 1.15.2 \
     --namespace kube-system \
     --set ipam.mode=kubernetes \
     --set=kubeProxyReplacement=true \
