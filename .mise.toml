@@ -1,9 +1,11 @@
 [tools]
+age = "1.1.1"
 checkov = "latest"
 flux2 = "latest"
 helm = "latest"
 k9s = "latest"
 pre-commit = "latest"
+sops = "latest"
 talhelper = "latest"
 talosctl = "latest"
 terraform = "latest"
