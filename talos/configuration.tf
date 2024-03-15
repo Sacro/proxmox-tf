@@ -89,32 +89,23 @@ locals {
   talos_version        = "v1.6.6"
   talos_amd64_url      = "https://github.com/siderolabs/talos/releases/download/${local.talos_version}/${local.talos_amd64_filename}"
 
-  talos_proxmox_config = {
+  talos_proxmox_controlplane_config = {
     machine = {
-      disks = []
       install = {
         disk       = "/dev/sdb"
-        extensions = setunion(local.talos_extensions, local.talos_proxmox_extensions)
-      }
-      kubelet = {
-        extraMounts = [{
-          source      = "/var/lib/longhorn"
-          destination = "/var/lib/longhorn"
-          type : "bind"
-          options : [
-            "bind",
-            "rshared",
-            "rw"
-          ]
-        }]
+        extensions = local.talos_proxmox_extensions
       }
     }
   }
 
   talos_proxmox_worker_config = {
     machine = {
+      install = {
+        disk       = "/dev/sdc"
+        extensions = setunion(local.talos_extensions, local.talos_proxmox_extensions)
+      }
       disks = [{
-        device = "/dev/sdc"
+        device = "/dev/sdb"
         partitions = [{
           mountpoint = "/var/lib/longhorn"
         }]
@@ -122,7 +113,7 @@ locals {
     }
   }
 
-  talos_turingpi_config = {
+  talos_turingpi_worker_config = {
     machine = {
       disks = [{
         device = "/dev/nvme0n1"
@@ -228,7 +219,22 @@ locals {
     }
   }
 
-  talos_worker_config = {}
+  talos_worker_config = {
+    machine = {
+      kubelet = {
+        extraMounts = [{
+          source      = "/var/lib/longhorn"
+          destination = "/var/lib/longhorn"
+          type : "bind"
+          options : [
+            "bind",
+            "rshared",
+            "rw"
+          ]
+        }]
+      }
+    }
+  }
 
   cluster_endpoint = "https://cluster.benwoodward.cloud:6443"
   cluster_name     = "cluster.benwoodward.cloud"

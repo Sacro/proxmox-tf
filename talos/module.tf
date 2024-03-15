@@ -5,8 +5,8 @@ module "deepmerge-controlplane-proxmox" {
 
   maps = [
     local.talos_config,
-    local.talos_proxmox_config,
-    local.talos_controlplane_config
+    local.talos_controlplane_config,
+    local.talos_proxmox_controlplane_config
   ]
 }
 
@@ -17,9 +17,8 @@ module "deepmerge-worker-proxmox" {
 
   maps = [
     local.talos_config,
-    local.talos_proxmox_config,
-    local.talos_proxmox_worker_config,
-    local.talos_worker_config
+    local.talos_worker_config,
+    local.talos_proxmox_worker_config
   ]
 }
 
@@ -30,7 +29,7 @@ module "deepmerge-worker-turingpi" {
 
   maps = [
     local.talos_config,
-    local.talos_turingpi_config,
-    local.talos_worker_config
+    local.talos_worker_config,
+    local.talos_turingpi_worker_config,
   ]
 }
