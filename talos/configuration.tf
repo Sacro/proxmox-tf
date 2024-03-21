@@ -56,37 +56,37 @@ locals {
   # crane export ghcr.io/siderolabs/extensions:v<talos-version> | tar x -O image-digests | grep <extension-name>
   talos_proxmox_extensions = toset([
     {
-      image = "ghcr.io/siderolabs/binfmt-misc:v1.6.6@sha256:37865e0c2b4f6d15052a0cac5ff331ba4dad7d9beb7e9b8bdb198425f995b04e"
+      image = "ghcr.io/siderolabs/binfmt-misc:v1.6.7@sha256:ea63d3b248d3f4bd825509147d55b71cb0c11ac702d68e9badbd8d2a1dd8629e"
     },
     {
-      image = "ghcr.io/siderolabs/qemu-guest-agent:8.1.3@sha256:426f6c62fba7810c5e73ab251b43d6a5ab68a4066d8bb0b05745905e5f1d61fc"
+      image = "ghcr.io/siderolabs/qemu-guest-agent:8.1.3@sha256:0bab8c62c3b0ac22495c989b48922f2e15273b1bb9705949c02d759d12e66a1a"
     },
     # {
-    #   image = "ghcr.io/siderolabs/tailscale:1.54.0@sha256:bcbeafd1f95053d5b2668f9a486601a24a0f61efaf7fe2cf0da74ef3aaa5b4b2"
+    #   image = "ghcr.io/siderolabs/tailscale:1.54.0@sha256:33293c92e7f3defc7bd29c3d93052c6861397a39a4c776c4c0cba790eb23a3c2"
     # }
   ])
 
   # crane export ghcr.io/nberlee/extensions:v<talos-version> | tar x -O image-digests | grep <extension-name>
   talos_turingpi_extensions = toset([
     {
-      image = "ghcr.io/nberlee/binfmt-misc:v1.6.6@sha256:943c30097cbfffaebcea86ebdd096fc7e7186998cc3de93827a74078c7251bd4"
+      image = "ghcr.io/nberlee/binfmt-misc:v1.6.7@sha256:2c7bd83188642bfe1a209026bc4f35d736c5d0d1ec34ed73dadb76ecd17e7f81"
     },
     {
-      image = "ghcr.io/nberlee/rk3588:v1.6.6@sha256:e31a8ce2d512b0c81122cf4d2e79337c866848962049dbfef070420777a8fbd3"
+      image = "ghcr.io/nberlee/rk3588:v1.6.7@sha256:a2aff0ad1e74772b520aaf29818022a78a78817732f9c4b776ce7662ed4d5966"
     }
   ])
 
   talos_extensions = toset([
     {
-      image = "ghcr.io/siderolabs/iscsi-tools:v0.1.4@sha256:7a775b029140e9f7c0bcecd5f31ebe2f4a6bfbfa6e1976bd8334a885b76862ba"
+      image = "ghcr.io/siderolabs/iscsi-tools:v0.1.4@sha256:c4d77d0c44ea37dedfff8c4b24b8c364f37c354519aafcdf58f81f04b4f6f21f"
     },
     {
-      image = "ghcr.io/siderolabs/util-linux-tools:v1.6.6@sha256:76b0a6f1800e1430d7fd90fddb38d814386580d49d75bacad4d2fd4ba188d435"
+      image = "ghcr.io/siderolabs/util-linux-tools:v1.6.7@sha256:76b0a6f1800e1430d7fd90fddb38d814386580d49d75bacad4d2fd4ba188d435"
     }
   ])
 
   talos_amd64_filename = "nocloud-amd64.raw.xz"
-  talos_version        = "v1.6.6"
+  talos_version        = "v1.6.7"
   talos_amd64_url      = "https://github.com/siderolabs/talos/releases/download/${local.talos_version}/${local.talos_amd64_filename}"
 
   talos_proxmox_controlplane_config = {
