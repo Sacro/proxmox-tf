@@ -31,27 +31,29 @@ locals {
 
   turingpi_workers = toset([{
     name         = "talostpi01"
-    address      = "192.168.15.52"
-    dhcp_address = "192.168.15.52"
+    address      = "192.168.15.56"
+    dhcp_address = "192.168.15.56"
     }, {
     name         = "talos-fxz-ghr"
-    address      = "192.168.15.53"
-    dhcp_address = "192.168.15.53"
+    address      = "192.168.15.57"
+    dhcp_address = "192.168.15.57"
     }, {
     name         = "talostpi03"
-    address      = "192.168.15.54"
-    dhcp_address = "192.168.15.54"
+    address      = "192.168.15.58"
+    dhcp_address = "192.168.15.58"
     }, {
     name         = "talostpi04"
-    address      = "192.168.15.55"
-    dhcp_address = "192.168.15.55"
+    address      = "192.168.15.59"
+    dhcp_address = "192.168.15.59"
   }])
 
   # workers = setunion(local.proxmox_workers, local.turingpi_workers)
 
-  domain  = "cluster.benwoodward.cloud"
-  gateway = "192.168.15.254"
-  subnet  = "24"
+  domain      = "cluster.benwoodward.cloud"
+  gateway     = "192.168.15.254"
+  nameservers = ["1.1.1.1", "1.0.0.1"]
+  timeservers = ["time.cloudflare.com"]
+  subnet      = "24"
 
   # crane export ghcr.io/siderolabs/extensions:v<talos-version> | tar x -O image-digests | grep <extension-name>
   talos_proxmox_extensions = toset([
@@ -168,14 +170,10 @@ locals {
         }
       }
       network = {
-        nameservers = [
-          local.gateway
-        ]
+        nameservers = local.nameservers
       }
       time = {
-        servers = [
-          local.gateway
-        ]
+        servers = local.timeservers
       }
 
     }

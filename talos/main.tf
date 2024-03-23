@@ -56,7 +56,7 @@ resource "proxmox_virtual_environment_vm" "talos_controlplane" {
   initialization {
     dns {
       domain  = local.domain
-      servers = [local.gateway]
+      servers = local.nameservers
     }
 
     ip_config {
