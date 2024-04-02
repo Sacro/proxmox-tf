@@ -31,20 +31,20 @@ locals {
 
   turingpi_workers = toset([{
     name         = "talostpi01"
-    address      = "192.168.15.56"
-    dhcp_address = "192.168.15.56"
+    address      = "192.168.15.52"
+    dhcp_address = "192.168.15.52"
     }, {
     name         = "talos-fxz-ghr"
-    address      = "192.168.15.57"
-    dhcp_address = "192.168.15.57"
+    address      = "192.168.15.53"
+    dhcp_address = "192.168.15.53"
     }, {
     name         = "talostpi03"
-    address      = "192.168.15.58"
-    dhcp_address = "192.168.15.58"
+    address      = "192.168.15.54"
+    dhcp_address = "192.168.15.54"
     }, {
     name         = "talostpi04"
-    address      = "192.168.15.59"
-    dhcp_address = "192.168.15.59"
+    address      = "192.168.15.55"
+    dhcp_address = "192.168.15.55"
   }])
 
   # workers = setunion(local.proxmox_workers, local.turingpi_workers)
