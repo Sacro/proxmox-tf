@@ -142,7 +142,7 @@ locals {
         enabled = true
         manifests = [
           "https://raw.githubusercontent.com/siderolabs/talos-cloud-controller-manager/main/docs/deploy/cloud-controller-manager.yml",
-          "https://raw.githubusercontent.com/sergelogvinov/proxmox-csi-plugin/main/docs/deploy/proxmox-csi-plugin-talos.yml"
+          # "https://raw.githubusercontent.com/sergelogvinov/proxmox-csi-plugin/main/docs/deploy/proxmox-csi-plugin-talos.yml"
         ]
       }
       network = {
@@ -155,26 +155,26 @@ locals {
       }
     }
     machine = {
-      registries = {
-        mirrors = {
-          "docker.io" = {
-            endpoints    = ["http://harbor/v2/proxy-docker.io"],
-            overridePath = true
-          },
-          "ghcr.io" = {
-            endpoints    = ["http://harbor/v2/proxy-ghcr.io"]
-            overridePath = true
-          },
-          "gcr.io" = {
-            endpoints = ["http://harbor/v2/proxy-gcr.io"],
-            overridePath : true
-          }
-          "registry.k8s.io" = {
-            endpoints = ["http://harbor/v2/proxy-registry.k8s.io"],
-            overridePath : true
-          }
-        }
-      }
+      # registries = {
+      #   mirrors = {
+      #     "docker.io" = {
+      #       endpoints    = ["http://harbor/v2/proxy-docker.io"],
+      #       overridePath = true
+      #     },
+      #     "ghcr.io" = {
+      #       endpoints    = ["http://harbor/v2/proxy-ghcr.io"]
+      #       overridePath = true
+      #     },
+      #     "gcr.io" = {
+      #       endpoints = ["http://harbor/v2/proxy-gcr.io"],
+      #       overridePath : true
+      #     }
+      #     "registry.k8s.io" = {
+      #       endpoints = ["http://harbor/v2/proxy-registry.k8s.io"],
+      #       overridePath : true
+      #     }
+      #   }
+      # }
       files = [{
         content = <<-EOT
         [metrics]
