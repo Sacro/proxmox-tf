@@ -24,7 +24,7 @@ run = """
 helm template \
     cilium \
     cilium/cilium \
-    --version 1.15.2 \
+    --version 1.15.3 \
     --namespace kube-system \
     --set ipam.mode=kubernetes \
     --set=kubeProxyReplacement=true \
@@ -34,6 +34,7 @@ helm template \
     --set=cgroup.hostRoot=/sys/fs/cgroup \
     --set=k8sServiceHost=localhost \
     --set=k8sServicePort=7445 \
+    --set=bgpControlPlane.enabled = true \
     --set=hubble.relay.enabled=true \
     --set=hubble.ui.enabled=true > cilium.yaml
 """
@@ -44,7 +45,7 @@ run = """
 helm upgrade \
   cilium \
   cilium/cilium \
-  --version 1.15.2 \
+  --version 1.15.3 \
   --namespace kube-system \
   --set ipam.mode=kubernetes \
   --set=kubeProxyReplacement=true \
@@ -54,6 +55,7 @@ helm upgrade \
   --set=cgroup.hostRoot=/sys/fs/cgroup \
   --set=k8sServiceHost=localhost \
   --set=k8sServicePort=7445 \
+  --set=bgpControlPlane.enabled = true \
   --set=hubble.relay.enabled=true \
   --set=hubble.ui.enabled=true
 """
