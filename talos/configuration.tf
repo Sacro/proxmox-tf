@@ -51,7 +51,7 @@ locals {
 
   domain      = "cluster.benwoodward.cloud"
   gateway     = "192.168.15.254"
-  nameservers = ["1.1.1.1", "1.0.0.1"]
+  nameservers = ["192.168.15.254"]
   timeservers = ["time.cloudflare.com"]
   subnet      = "24"
 
