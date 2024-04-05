@@ -34,7 +34,7 @@ helm template \
     --set=cgroup.hostRoot=/sys/fs/cgroup \
     --set=k8sServiceHost=localhost \
     --set=k8sServicePort=7445 \
-    --set=bgpControlPlane.enabled = true \
+    --set=bgpControlPlane.enabled=true \
     --set=hubble.relay.enabled=true \
     --set=hubble.ui.enabled=true > cilium.yaml
 """
@@ -55,7 +55,7 @@ helm upgrade \
   --set=cgroup.hostRoot=/sys/fs/cgroup \
   --set=k8sServiceHost=localhost \
   --set=k8sServicePort=7445 \
-  --set=bgpControlPlane.enabled = true \
+  --set=bgpControlPlane.enabled=true \
   --set=hubble.relay.enabled=true \
   --set=hubble.ui.enabled=true
 """
