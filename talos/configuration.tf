@@ -58,14 +58,11 @@ locals {
   # crane export ghcr.io/siderolabs/extensions:v<talos-version> | tar x -O image-digests | grep <extension-name>
   talos_proxmox_extensions = toset([
     {
-      image = "ghcr.io/siderolabs/binfmt-misc:v1.6.7@sha256:ea63d3b248d3f4bd825509147d55b71cb0c11ac702d68e9badbd8d2a1dd8629e"
+      image = "ghcr.io/siderolabs/binfmt-misc:v1.7.0@sha256:af5fc70a8d21d3436629579fe1f0462cb8640f53d5d8d8d415eb21a5370ab699"
     },
     {
-      image = "ghcr.io/siderolabs/qemu-guest-agent:8.1.3@sha256:0bab8c62c3b0ac22495c989b48922f2e15273b1bb9705949c02d759d12e66a1a"
+      image = "ghcr.io/siderolabs/qemu-guest-agent:8.2.2@sha256:6c0fe3da594744a85087d823b3281b24b45849f8f8c6322a62d06d37ed904026"
     },
-    # {
-    #   image = "ghcr.io/siderolabs/tailscale:1.54.0@sha256:33293c92e7f3defc7bd29c3d93052c6861397a39a4c776c4c0cba790eb23a3c2"
-    # }
   ])
 
   # crane export ghcr.io/nberlee/extensions:v<talos-version> | tar x -O image-digests | grep <extension-name>
@@ -80,15 +77,18 @@ locals {
 
   talos_extensions = toset([
     {
-      image = "ghcr.io/siderolabs/iscsi-tools:v0.1.4@sha256:c4d77d0c44ea37dedfff8c4b24b8c364f37c354519aafcdf58f81f04b4f6f21f"
+      image = "ghcr.io/siderolabs/iscsi-tools:v0.1.4@sha256:c0ab739544051b54dce1b776875ea98c28642b748dd31089cc5463082e934e95"
     },
     {
-      image = "ghcr.io/siderolabs/util-linux-tools:v1.6.7@sha256:76b0a6f1800e1430d7fd90fddb38d814386580d49d75bacad4d2fd4ba188d435"
-    }
+      image = "ghcr.io/siderolabs/tailscale:1.62.1@sha256:c1c34e741a9c886a9625d65bc78220852abed7f0cfa2d76c876167ad7dac47ec"
+    },
+    {
+      image = "ghcr.io/siderolabs/util-linux-tools:2.39.3@sha256:1d4300ac4bf995005e4ad94afd60e7fe6cc97d0b0d99e647209f498ea2edeece"
+    },
   ])
 
   talos_amd64_filename = "nocloud-amd64.raw.xz"
-  talos_version        = "v1.6.7"
+  talos_version        = "v1.7.0"
   talos_amd64_url      = "https://github.com/siderolabs/talos/releases/download/${local.talos_version}/${local.talos_amd64_filename}"
 
   talos_proxmox_controlplane_config = {
