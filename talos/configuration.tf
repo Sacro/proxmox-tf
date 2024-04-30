@@ -31,20 +31,20 @@ locals {
 
   turingpi_workers = toset([{
     name         = "talostpi01"
-    address      = "192.168.15.34"
-    dhcp_address = "192.168.15.34"
+    address      = "192.168.15.91"
+    dhcp_address = "192.168.15.91"
     }, {
     name         = "talos-fxz-ghr"
-    address      = "192.168.15.43"
-    dhcp_address = "192.168.15.43"
+    address      = "192.168.15.92"
+    dhcp_address = "192.168.15.92"
     }, {
     name         = "talostpi03"
-    address      = "192.168.15.44"
-    dhcp_address = "192.168.15.44"
+    address      = "192.168.15.93"
+    dhcp_address = "192.168.15.93"
     }, {
     name         = "talostpi04"
-    address      = "192.168.15.59"
-    dhcp_address = "192.168.15.59"
+    address      = "192.168.15.94"
+    dhcp_address = "192.168.15.94"
   }])
 
   # workers = setunion(local.proxmox_workers, local.turingpi_workers)
@@ -126,12 +126,6 @@ locals {
       install = {
         disk       = "/dev/mmcblk0"
         extensions = setunion(local.talos_extensions, local.talos_turingpi_extensions)
-      }
-      kernel = {
-        modules = [{
-          name = "rockchip-cpufreq"
-          }
-        ]
       }
     }
   }
