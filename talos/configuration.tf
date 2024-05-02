@@ -169,6 +169,12 @@ locals {
       #     }
       #   }
       # }
+      features = {
+        hostDNS = {
+          enabled = true
+          # forwardKubeDNSToHost = true
+        }
+      }
       files = [{
         content = <<-EOT
         [metrics]
@@ -179,7 +185,7 @@ locals {
       }]
       kubelet = {
         extraArgs = {
-          cloud-provider : "external"
+          cloud-provider             = "external"
           rotate-server-certificates = true
         }
       }
@@ -189,7 +195,6 @@ locals {
       time = {
         servers = local.timeservers
       }
-
     }
   }
 
@@ -215,7 +220,7 @@ locals {
           allowedRoles = [
             "os:reader"
           ]
-          allowedKubernetesNamespaces : [
+          allowedKubernetesNamespaces = [
             "kube-system"
           ]
         }
@@ -237,8 +242,8 @@ locals {
         extraMounts = [{
           source      = "/var/lib/longhorn"
           destination = "/var/lib/longhorn"
-          type : "bind"
-          options : [
+          type        = "bind"
+          options = [
             "bind",
             "rshared",
             "rw"
