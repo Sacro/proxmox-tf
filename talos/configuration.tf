@@ -176,8 +176,8 @@ locals {
       # }
       features = {
         hostDNS = {
-          enabled              = true
-          forwardKubeDNSToHost = true
+          enabled = true
+          # forwardKubeDNSToHost = true
         }
       }
       files = [{
