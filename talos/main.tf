@@ -169,7 +169,7 @@ resource "talos_machine_configuration_apply" "proxmox_control_plane" {
   machine_configuration_input = data.talos_machine_configuration.control_plane.machine_configuration
   client_configuration        = talos_machine_secrets.secrets.client_configuration
   config_patches = [
-    yamlencode(module.deepmerge-controlplane-proxmox.merged)
+    yamlencode(module.deepmerge-controlplane-proxmox.merged),
   ]
 }
 
@@ -187,6 +187,7 @@ resource "talos_machine_configuration_apply" "proxmox_worker" {
   client_configuration        = talos_machine_secrets.secrets.client_configuration
   config_patches = [
     yamlencode(module.deepmerge-worker-proxmox.merged),
+    templatefile("${path.module}/extensionserviceconfig/tailscale.yaml", {})
   ]
 }
 
@@ -202,6 +203,7 @@ resource "talos_machine_configuration_apply" "turingpi_worker" {
   client_configuration        = talos_machine_secrets.secrets.client_configuration
   config_patches = [
     yamlencode(module.deepmerge-worker-turingpi.merged),
+    templatefile("${path.module}/extensionserviceconfig/tailscale.yaml", {})
   ]
 }
 
