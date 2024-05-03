@@ -55,7 +55,7 @@ resource "proxmox_virtual_environment_vm" "talos_controlplane" {
 
   initialization {
     dns {
-      domain  = local.domain
+      # domain  = local -- don't set this
       servers = local.nameservers
     }
 
