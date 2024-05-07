@@ -180,14 +180,6 @@ locals {
           # forwardKubeDNSToHost = true
         }
       }
-      files = [{
-        content = <<-EOT
-        [metrics]
-          address = "0.0.0.0:11234"
-        EOT
-        path    = "/etc/cri/conf.d/20-customization.part"
-        op      = "create"
-      }]
       kubelet = {
         extraArgs = {
           cloud-provider             = "external"
