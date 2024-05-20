@@ -34,7 +34,7 @@ locals {
     address      = "192.168.15.91"
     dhcp_address = "192.168.15.91"
     }, {
-    name         = "talos-fxz-ghr"
+    name         = "talostpi02"
     address      = "192.168.15.92"
     dhcp_address = "192.168.15.92"
     }, {
@@ -49,7 +49,7 @@ locals {
 
   # workers = setunion(local.proxmox_workers, local.turingpi_workers)
 
-  domain      = "cluster.benwoodward.cloud"
+  # domain      = "cluster.benwoodward.cloud"
   gateway     = "192.168.15.254"
   nameservers = ["192.168.15.254"]
   timeservers = ["time.cloudflare.com"]
@@ -58,7 +58,7 @@ locals {
   # crane export ghcr.io/siderolabs/extensions:v<talos-version> | tar x -O image-digests | grep <extension-name>
   talos_proxmox_extensions = toset([
     {
-      image = "ghcr.io/siderolabs/qemu-guest-agent:8.2.2@sha256:0eb01d83f21d68bd8010b8f2591494b487cf11a397253e68c7d67132520bb47c"
+      image = "ghcr.io/siderolabs/qemu-guest-agent:8.2.2@sha256:320ad8fb56be86269c926c112e9117334120662f5417590b915218bd27c3193e"
     },
   ])
 
@@ -68,27 +68,33 @@ locals {
     #   image = "ghcr.io/nberlee/binfmt-misc:v1.6.7@sha256:2c7bd83188642bfe1a209026bc4f35d736c5d0d1ec34ed73dadb76ecd17e7f81"
     # },
     {
-      image = "ghcr.io/nberlee/rk3588:v1.7.1"
+      image = "ghcr.io/nberlee/rk3588:v1.7.2"
     }
   ])
 
   talos_extensions = toset([
     {
-      image = "ghcr.io/siderolabs/binfmt-misc:v1.7.1@sha256:74fd0cf7d9549d7b95b4514264638c492b297a186750079b59bc2510f0c594a3"
+      image = "ghcr.io/siderolabs/binfmt-misc:v1.7.2@sha256:309a257b62d648df92aa1e4e836f94541e2fa4e189c5469e4cbae1b9541a1759"
     },
     {
-      image = "ghcr.io/siderolabs/iscsi-tools:v0.1.4@sha256:4370d0740f27a7ae7aee56a8da6cd4f00ed8019bd4024fa73b44cb388ec86194"
+      image = "ghcr.io/siderolabs/iscsi-tools:v0.1.4@sha256:40084f37fbafb4f8dd3b3af821357e3dc2501b04d9edd532637b370d6c457800"
     },
     {
-      image = "ghcr.io/siderolabs/tailscale:1.62.1@sha256:83f70e490b1aac16240134a08d099dec8195f9e78db318909028f3b2aa1e2af0"
+      image = "ghcr.io/siderolabs/spin:v0.13.1@sha256:10ef5e7f22490ae4e99e408b11b374f763e397d7c295f7d22b04aae0bb838c94"
+    },
+    # {
+    #   image = "ghcr.io/siderolabs/tailscale:1.62.1@sha256:83f70e490b1aac16240134a08d099dec8195f9e78db318909028f3b2aa1e2af0"
+    # },
+    {
+      image = "ghcr.io/siderolabs/util-linux-tools:2.39.3@sha256:6ef22aae2953739441910d852131b45b5f2bcb29e5b590b46a589380ad44d489"
     },
     {
-      image = "ghcr.io/siderolabs/util-linux-tools:2.39.3@sha256:6a0d86f1cfbb296dfe2c29e033d9cb3d9f78ed98413865522238f4e1505365c4"
-    },
+      image = "ghcr.io/siderolabs/wasmedge:v0.3.0@sha256:ee29d9a66506b49996bf1e2ed8300e00d5bb14787b30a80d4ccef31db789cf24"
+    }
   ])
 
   talos_amd64_filename = "nocloud-amd64.raw.xz"
-  talos_version        = "v1.7.1"
+  talos_version        = "v1.7.2"
   talos_amd64_url      = "https://github.com/siderolabs/talos/releases/download/${local.talos_version}/${local.talos_amd64_filename}"
 
   talos_proxmox_controlplane_config = {
@@ -176,8 +182,9 @@ locals {
       # }
       features = {
         hostDNS = {
-          enabled = true
-          # forwardKubeDNSToHost = true
+          enabled              = true
+          forwardKubeDNSToHost = false
+          resolveMemberNames   = false
         }
       }
       kubelet = {
@@ -187,7 +194,8 @@ locals {
         }
       }
       network = {
-        nameservers = local.nameservers
+        disableSearchDomain = true
+        nameservers         = local.nameservers
       }
       time = {
         servers = local.timeservers
