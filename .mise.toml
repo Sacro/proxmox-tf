@@ -42,7 +42,7 @@ helm template \
 [tasks.updateCiliumViaHelm]
 description = "Update Cilium via Helm"
 run = """
-helm upgrade \
+helm install \
   cilium \
   cilium/cilium \
   --version 1.15.5 \
