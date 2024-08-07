@@ -58,7 +58,7 @@ locals {
   # crane export ghcr.io/siderolabs/extensions:v<talos-version> | tar x -O image-digests | grep <extension-name>
   talos_proxmox_extensions = toset([
     {
-      image = "ghcr.io/siderolabs/qemu-guest-agent:8.2.2@sha256:2fef4a09f398008c88bad11aaa4fabba0cf8f756964543e26457a9b084c565cb"
+      image = "ghcr.io/siderolabs/qemu-guest-agent:8.2.2@sha256:e8020f513f891896fd3bb506c7af8a763a3c70b063e4901caaad073b5e6e0815"
     },
   ])
 
@@ -68,36 +68,36 @@ locals {
     #   image = "ghcr.io/nberlee/binfmt-misc:v1.6.7@sha256:2c7bd83188642bfe1a209026bc4f35d736c5d0d1ec34ed73dadb76ecd17e7f81"
     # },
     {
-      image = "ghcr.io/nberlee/rk3588:v1.7.5"
+      image = "ghcr.io/nberlee/rk3588:v1.7.6@sha256:efe9e70c56854c938acad971075009892e7163e6e4e062f4c1ea4ed6557c21c8"
     }
   ])
 
   talos_extensions = toset([
     {
-      image = "ghcr.io/siderolabs/binfmt-misc:v1.7.5@sha256:75a9784e3c305a1da07f7f5030ca70c3d35f36cce7dfd318f2205ed18b283736"
+      image = "ghcr.io/siderolabs/binfmt-misc:v1.7.6@sha256:b746fbd3ac1a0fa1040c6109cf230a256ee39d89698e30d5a925ca74d955efc9"
     },
     {
-      image = "ghcr.io/siderolabs/iscsi-tools:v0.1.4@sha256:18a2fd13f51a7143339bc4b075dcecb9c3b5725b80429d99e06bb409b87b99e4"
+      image = "ghcr.io/siderolabs/iscsi-tools:v0.1.4@sha256:83672c4493c91f2d99aabb8190e8ac1d1299afe77a20c8b5002be6e6477088f2"
     },
     {
-      image = "ghcr.io/siderolabs/spin:v0.13.1@sha256:dc1cf067159e66221b1a8dab59c817228cdc0dfc87ed6ae1edcc45743ddcd450"
+      image = "ghcr.io/siderolabs/spin:v0.15.0@sha256:0ec7613913960c95413699a46745a788d4c22776942c2d24ebd0457f11e6be33"
     },
     # {
-    #   image = "ghcr.io/siderolabs/tailscale:1.68.1@sha256:fb7b3db86874b25dd3907e3a96ac63ea87d6c6f84c858cf040e3901828570cc5"
-    # },nvim
+    #   image = "ghcr.io/siderolabs/tailscale:1.68.1@sha256:5506fd5882327d888fafb7a12b11537762020e09820adbbecac4af083bf4e68f"
+    # },
     {
       image = "ghcr.io/siderolabs/util-linux-tools:2.39.3@sha256:827eda8a92aaa97371306b0e5352beaaae857a75c99196672f676dc54eab6c9d"
     },
     {
-      image = "ghcr.io/siderolabs/v4l-uvc-drivers:v1.7.5@sha256:7f6a994589db489d1f04cd52ea6d60f518ad3b73a7f88f63e330b45867f4709c"
+      image = "ghcr.io/siderolabs/v4l-uvc-drivers:v1.7.6@sha256:09b29a73d0125411bfef8039b1ea5a83de1f79cc9194cac70850449d38c19f11"
     },
     {
-      image = "ghcr.io/siderolabs/wasmedge:v0.3.0@sha256:64a5e217d4d6046c772f004109e8f5001ca65ba4d0921541e92d545794f35f56"
+      image = "ghcr.io/siderolabs/wasmedge:v0.3.0@sha256:0f4069d3f1a74da98c472a5d44cd7aa304ed896c90e2d8bbf7790d3cd82deb41"
     }
   ])
 
   talos_amd64_filename = "nocloud-amd64.raw.xz"
-  talos_version        = "v1.7.5"
+  talos_version        = "v1.7.6"
   talos_amd64_url      = "https://github.com/siderolabs/talos/releases/download/${local.talos_version}/${local.talos_amd64_filename}"
 
   talos_proxmox_controlplane_config = {
