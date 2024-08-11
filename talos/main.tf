@@ -68,7 +68,8 @@ resource "proxmox_virtual_environment_vm" "talos_controlplane" {
   }
 
   memory {
-    dedicated = 4096
+    dedicated = 8192
+    floating  = 4096
   }
 
   network_device {}
@@ -143,6 +144,7 @@ resource "proxmox_virtual_environment_vm" "talos_worker" {
 
   memory {
     dedicated = 8192
+    floating  = 4096
   }
 
   network_device {}
