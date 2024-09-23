@@ -312,7 +312,7 @@ resource "tls_private_key" "flux" {
 resource "github_repository" "flux" {
   name                 = var.github_repository
   vulnerability_alerts = true
-  visibility           = "public"
+  visibility           = "private"
   lifecycle {
     prevent_destroy = true
   }
