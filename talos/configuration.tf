@@ -55,13 +55,6 @@ locals {
   timeservers = ["time.cloudflare.com"]
   subnet      = "24"
 
-  # crane export ghcr.io/siderolabs/extensions:v<talos-version> | tar x -O image-digests | grep <extension-name>
-  talos_proxmox_extensions = toset([
-    {
-      image = "ghcr.io/siderolabs/qemu-guest-agent:8.2.2@sha256:e8020f513f891896fd3bb506c7af8a763a3c70b063e4901caaad073b5e6e0815"
-    },
-  ])
-
   # crane export ghcr.io/nberlee/extensions:v<talos-version> | tar x -O image-digests | grep <extension-name>
   talos_turingpi_extensions = toset([
     # {
@@ -72,39 +65,16 @@ locals {
     }
   ])
 
-  talos_extensions = toset([
-    {
-      image = "ghcr.io/siderolabs/binfmt-misc:v1.7.6@sha256:b746fbd3ac1a0fa1040c6109cf230a256ee39d89698e30d5a925ca74d955efc9"
-    },
-    {
-      image = "ghcr.io/siderolabs/iscsi-tools:v0.1.4@sha256:83672c4493c91f2d99aabb8190e8ac1d1299afe77a20c8b5002be6e6477088f2"
-    },
-    {
-      image = "ghcr.io/siderolabs/spin:v0.15.0@sha256:0ec7613913960c95413699a46745a788d4c22776942c2d24ebd0457f11e6be33"
-    },
-    # {
-    #   image = "ghcr.io/siderolabs/tailscale:1.68.1@sha256:5506fd5882327d888fafb7a12b11537762020e09820adbbecac4af083bf4e68f"
-    # },
-    {
-      image = "ghcr.io/siderolabs/util-linux-tools:2.39.3@sha256:827eda8a92aaa97371306b0e5352beaaae857a75c99196672f676dc54eab6c9d"
-    },
-    {
-      image = "ghcr.io/siderolabs/v4l-uvc-drivers:v1.7.6@sha256:09b29a73d0125411bfef8039b1ea5a83de1f79cc9194cac70850449d38c19f11"
-    },
-    {
-      image = "ghcr.io/siderolabs/wasmedge:v0.3.0@sha256:0f4069d3f1a74da98c472a5d44cd7aa304ed896c90e2d8bbf7790d3cd82deb41"
-    }
-  ])
-
   talos_amd64_filename = "nocloud-amd64.raw.xz"
-  talos_version        = "v1.7.6"
-  talos_amd64_url      = "https://github.com/siderolabs/talos/releases/download/${local.talos_version}/${local.talos_amd64_filename}"
+  talos_version        = "v1.8.0"
+
+  talos_amd64_url = "https://factory.talos.dev/image/376567988ad370138ad8b2698212367b8edcb69b5fd68c80be1f2ec7d603b4ba/${local.talos_version}/${local.talos_amd64_filename}"
 
   talos_proxmox_controlplane_config = {
     machine = {
       install = {
-        disk       = "/dev/sdb"
-        extensions = local.talos_proxmox_extensions
+        disk  = "/dev/sdb"
+        image = data.talos_image_factory_urls.proxmox-controlplane.urls.disk_image
       }
     }
   }
@@ -112,8 +82,9 @@ locals {
   talos_proxmox_worker_config = {
     machine = {
       install = {
-        disk       = "/dev/sdc"
-        extensions = setunion(local.talos_extensions, local.talos_proxmox_extensions)
+        disk  = "/dev/sdc"
+        image = data.talos_image_factory_urls.proxmox-worker.urls.disk_image
+
       }
       disks = [{
         device = "/dev/sdb"
@@ -133,8 +104,9 @@ locals {
         }]
       }]
       install = {
-        disk       = "/dev/mmcblk0"
-        extensions = setunion(local.talos_extensions, local.talos_turingpi_extensions)
+        disk = "/dev/mmcblk0"
+        # image = ""
+        # extensions = setunion(local.talos_extensions, local.talos_turingpi_extensions)
       }
       kernel = {
         modules = [{
@@ -268,6 +240,74 @@ locals {
   cluster_endpoint = "https://cluster.benwoodward.cloud:6443"
   cluster_name     = "cluster.benwoodward.cloud"
   cluster_vip      = "192.168.15.150"
+}
+
+
+data "talos_image_factory_extensions_versions" "worker" {
+  talos_version = local.talos_version
+  filters = {
+    names = [
+      "binfmt-misc",
+      "iscsi-tools",
+      "spin",
+      # "tailscale",
+      "util-linux-tools",
+      "v4l-uvc-drivers",
+      "wasmedge"
+    ]
+  }
+}
+
+data "talos_image_factory_extensions_versions" "proxmox" {
+  talos_version = local.talos_version
+  filters = {
+    names = ["qemu-guest-agent"]
+  }
+}
+
+resource "talos_image_factory_schematic" "proxmox-controlplane" {
+  schematic = yamlencode(
+    {
+      customization = {
+        systemExtensions = {
+          officialExtensions = data.talos_image_factory_extensions_versions.proxmox.extensions_info.*.name
+        }
+      }
+    }
+  )
+}
+
+data "talos_image_factory_urls" "proxmox-controlplane" {
+  architecture  = "amd64"
+  platform      = "nocloud"
+  schematic_id  = talos_image_factory_schematic.proxmox-controlplane.id
+  talos_version = local.talos_version
+}
+
+data "talos_image_factory_urls" "proxmox-worker" {
+  architecture  = "amd64"
+  platform      = "nocloud"
+  schematic_id  = talos_image_factory_schematic.proxmox-worker.id
+  talos_version = local.talos_version
+}
+
+resource "talos_image_factory_schematic" "proxmox-worker" {
+  schematic = yamlencode(
+    {
+      customization = {
+        systemExtensions = {
+          officialExtensions = setunion(
+            data.talos_image_factory_extensions_versions.proxmox.extensions_info.*.name,
+            data.talos_image_factory_extensions_versions.worker.extensions_info.*.name,
+          )
+        }
+      }
+    }
+  )
+}
+
+resource "talos_image_factory_schematic" "turingpi-worker" {
+
 }
 
 resource "talos_machine_secrets" "secrets" {
