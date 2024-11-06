@@ -9,13 +9,3 @@ output "talosconfig" {
   value     = module.talos.talosconfig
   sensitive = true
 }
-
-output "proxmox-controlplane-image" {
-  value     = module.talos.proxmox-controlplane-image
-  sensitive = false
-}
-
-output "proxmox-worker-image" {
-  value     = module.talos.proxmox-worker-image
-  sensitive = false
-}

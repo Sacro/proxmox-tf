@@ -2,19 +2,19 @@ terraform {
   required_providers {
     flux = {
       source  = "fluxcd/flux"
-      version = "1.3.0"
+      version = "1.4.0"
     }
     github = {
       source  = "integrations/github"
-      version = "6.3.0"
+      version = "6.3.1"
     }
     proxmox = {
       source  = "bpg/proxmox"
-      version = "0.65.0"
+      version = "0.66.3"
     }
     talos = {
       source  = "siderolabs/talos"
-      version = "0.6.0-beta.0"
+      version = "0.6.1"
     }
     tls = {
       source  = "hashicorp/tls"
@@ -22,15 +22,15 @@ terraform {
     }
   }
 
-  required_version = "1.9.6"
+  required_version = "1.9.8"
 }
 
 provider "flux" {
   kubernetes = {
-    host                   = data.talos_cluster_kubeconfig.kubeconfig.kubernetes_client_configuration.host
-    client_certificate     = base64decode(data.talos_cluster_kubeconfig.kubeconfig.kubernetes_client_configuration.client_certificate)
-    client_key             = base64decode(data.talos_cluster_kubeconfig.kubeconfig.kubernetes_client_configuration.client_key)
-    cluster_ca_certificate = base64decode(data.talos_cluster_kubeconfig.kubeconfig.kubernetes_client_configuration.ca_certificate)
+    host                   = talos_cluster_kubeconfig.kubeconfig.kubernetes_client_configuration.host
+    client_certificate     = base64decode(talos_cluster_kubeconfig.kubeconfig.kubernetes_client_configuration.client_certificate)
+    client_key             = base64decode(talos_cluster_kubeconfig.kubeconfig.kubernetes_client_configuration.client_key)
+    cluster_ca_certificate = base64decode(talos_cluster_kubeconfig.kubeconfig.kubernetes_client_configuration.ca_certificate)
   }
   git = {
     url = "ssh://git@github.com/${var.github_org}/${var.github_repository}.git"

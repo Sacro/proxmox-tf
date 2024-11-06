@@ -66,7 +66,7 @@ locals {
   ])
 
   talos_amd64_filename = "nocloud-amd64.raw.xz"
-  talos_version        = "v1.8.0"
+  talos_version        = "v1.8.2"
 
   talos_amd64_url = "https://factory.talos.dev/image/376567988ad370138ad8b2698212367b8edcb69b5fd68c80be1f2ec7d603b4ba/${local.talos_version}/${local.talos_amd64_filename}"
 
@@ -185,8 +185,10 @@ locals {
         "https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml"
       ]
       inlineManifests = [{
-        name     = "cilium"
-        contents = templatefile("${path.module}/cilium.yaml", {})
+        name = "cilium"
+        contents = templatefile("${path.module}/cilium.yaml", {
+          BIN_PATH = "$${BIN_PATH}"
+        })
       }]
     }
     machine = {
@@ -242,28 +244,35 @@ locals {
   cluster_vip      = "192.168.15.150"
 }
 
-
-data "talos_image_factory_extensions_versions" "worker" {
-  talos_version = local.talos_version
-  filters = {
-    names = [
-      "binfmt-misc",
-      "iscsi-tools",
-      "spin",
-      # "tailscale",
-      "util-linux-tools",
-      "v4l-uvc-drivers",
-      "wasmedge"
-    ]
-  }
-}
-
 data "talos_image_factory_extensions_versions" "proxmox" {
   talos_version = local.talos_version
   filters = {
     names = ["qemu-guest-agent"]
   }
 }
+
+data "talos_image_factory_extensions_versions" "turingpi" {
+  talos_version = local.talos_version
+  filters = {
+    names = []
+  }
+}
+
+data "talos_image_factory_extensions_versions" "worker" {
+  talos_version = local.talos_version
+  filters = {
+    names = [
+      "siderolabs/binfmt-misc",
+      "siderolabs/iscsi-tools",
+      "siderolabs/spin",
+      # "siderolabs/tailscale",
+      "siderolabs/util-linux-tools",
+      "siderolabs/v4l-uvc-drivers",
+      "siderolabs/wasmedge"
+    ]
+  }
+}
+
 
 resource "talos_image_factory_schematic" "proxmox-controlplane" {
   schematic = yamlencode(
@@ -307,7 +316,18 @@ resource "talos_image_factory_schematic" "proxmox-worker" {
 }
 
 resource "talos_image_factory_schematic" "turingpi-worker" {
-
+  schematic = yamlencode(
+    {
+      customization = {
+        systemExtensions = {
+          officialExtensions = setunion(
+            # data.talos_image_factory_extensions_versions.turingpi.extensions_info.*.name,
+            data.talos_image_factory_extensions_versions.worker.extensions_info.*.name,
+          )
+        }
+      }
+    }
+  )
 }
 
 resource "talos_machine_secrets" "secrets" {

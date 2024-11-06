@@ -18,13 +18,14 @@ tfupdate = "latest"
 "npm:@commitlint/cli" = "latest"
 "npm:@commitlint/config-conventional" = "latest"
 
+
 [tasks.updateCiliumHelmTemplate]
 description = "Update Cilium helm template"
 run = """
 helm template \
     cilium \
     cilium/cilium \
-    --version 1.16.2 \
+    --version 1.16.3 \
     --namespace kube-system \
     --set ipam.mode=kubernetes \
     --set kubeProxyReplacement=true \
@@ -40,7 +41,8 @@ helm template \
     --set ingressController.loadbalancerMode=dedicated \
     --set bgpControlPlane.enabled=true \
     --set hubble.relay.enabled=true \
-    --set hubble.ui.enabled=true > cilium.yaml
+    --set hubble.ui.enabled=true \
+    > cilium.yaml
 """
 
 [tasks.upgradeCiliumViaHelm]
@@ -49,7 +51,7 @@ run = """
 helm upgrade \
   cilium \
   cilium/cilium \
-  --version 1.16.2 \
+  --version 1.16.3 \
   --namespace kube-system \
   --set ipam.mode=kubernetes \
   --set kubeProxyReplacement=true \

@@ -55,7 +55,7 @@ resource "proxmox_virtual_environment_vm" "talos_controlplane" {
 
   initialization {
     dns {
-      # domain  = local -- don't set this
+      domain  = local.cluster_name
       servers = local.nameservers
     }
 
@@ -173,6 +173,10 @@ resource "talos_machine_configuration_apply" "proxmox_control_plane" {
   config_patches = [
     yamlencode(module.deepmerge-controlplane-proxmox.merged),
   ]
+
+  lifecycle {
+    ignore_changes = [config_patches]
+  }
 }
 
 resource "talos_machine_configuration_apply" "proxmox_worker" {
@@ -209,7 +213,6 @@ resource "talos_machine_configuration_apply" "turingpi_worker" {
   ]
 }
 
-
 resource "talos_machine_bootstrap" "bootstrap" {
   depends_on           = [talos_machine_configuration_apply.proxmox_control_plane[0]]
   node                 = tolist(local.proxmox_controlplanes)[0].address
@@ -217,13 +220,19 @@ resource "talos_machine_bootstrap" "bootstrap" {
   client_configuration = talos_machine_secrets.secrets.client_configuration
 }
 
-data "talos_cluster_kubeconfig" "kubeconfig" {
+# resource "talos_cluster_kubeconfig" "kubeconfig" {
+#   depends_on           = [talos_machine_bootstrap.bootstrap]
+#   client_configuration = talos_machine_secrets.secrets.client_configuration
+#   node                 = tolist(local.controlplanes)[0].address
+# }
+
+resource "talos_cluster_kubeconfig" "kubeconfig" {
   depends_on           = [talos_machine_bootstrap.bootstrap]
   client_configuration = talos_machine_secrets.secrets.client_configuration
   node                 = tolist(local.controlplanes)[0].address
 }
 
 resource "flux_bootstrap_git" "bootstrap" {
-  depends_on = [github_repository_deploy_key.flux, data.talos_cluster_kubeconfig.kubeconfig]
+  depends_on = [github_repository_deploy_key.flux, resource.talos_cluster_kubeconfig.kubeconfig]
   path       = "clusters/${local.cluster_name}"
 }
