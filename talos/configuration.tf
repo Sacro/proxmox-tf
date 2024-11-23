@@ -66,7 +66,7 @@ locals {
   ])
 
   talos_amd64_filename = "nocloud-amd64.raw.xz"
-  talos_version        = "v1.8.2"
+  talos_version        = "v1.8.3"
 
   talos_amd64_url = "https://factory.talos.dev/image/376567988ad370138ad8b2698212367b8edcb69b5fd68c80be1f2ec7d603b4ba/${local.talos_version}/${local.talos_amd64_filename}"
 
@@ -104,8 +104,8 @@ locals {
         }]
       }]
       install = {
-        disk = "/dev/mmcblk0"
-        # image = ""
+        disk  = "/dev/mmcblk0"
+        image = data.talos_image_factory_urls.turingpi-worker.urls.disk_image
         # extensions = setunion(local.talos_extensions, local.talos_turingpi_extensions)
       }
       kernel = {
@@ -234,7 +234,7 @@ locals {
         }]
       }
       nodeLabels = {
-        bgp-policy = "a"
+        bgp-policy = "lb"
       }
     }
   }
@@ -300,6 +300,12 @@ data "talos_image_factory_urls" "proxmox-worker" {
   talos_version = local.talos_version
 }
 
+data "talos_image_factory_urls" "turingpi-worker" {
+  architecture  = "arm64"
+  platform      = "metal"
+  schematic_id  = talos_image_factory_schematic.turingpi-worker.id
+  talos_version = local.talos_version
+}
 resource "talos_image_factory_schematic" "proxmox-worker" {
   schematic = yamlencode(
     {
