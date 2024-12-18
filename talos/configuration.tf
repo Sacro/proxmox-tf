@@ -109,9 +109,9 @@ locals {
         # extensions = setunion(local.talos_extensions, local.talos_turingpi_extensions)
       }
       kernel = {
-        modules = [{
-          name = "rockchip-cpufreq"
-        }]
+        # modules = [{
+        #   name = "rockchip-cpufreq"
+        # }]
       }
     }
   }
