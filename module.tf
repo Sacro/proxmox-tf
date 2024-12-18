@@ -9,3 +9,15 @@ output "talosconfig" {
   value     = module.talos.talosconfig
   sensitive = true
 }
+
+output "proxmox-control-plane-installer-url" {
+  value = module.talos.proxmox-control-plane-installer-url
+}
+
+output "proxmox-worker-installer-url" {
+  value = module.talos.proxmox-worker-installer-url
+}
+
+output "turingpi-worker-installer-url" {
+  value = module.talos.turingpi-worker-installer-url
+}
