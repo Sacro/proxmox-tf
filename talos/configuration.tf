@@ -263,6 +263,7 @@ data "talos_image_factory_extensions_versions" "worker" {
   filters = {
     names = [
       "siderolabs/binfmt-misc",
+      "siderolabs/cloudflared",
       "siderolabs/iscsi-tools",
       "siderolabs/spin",
       # "siderolabs/tailscale",
@@ -302,7 +303,7 @@ data "talos_image_factory_urls" "proxmox-worker" {
 
 data "talos_image_factory_urls" "turingpi-worker" {
   architecture  = "arm64"
-  platform      = "metal"
+  sbc           = "turingrk1"
   schematic_id  = talos_image_factory_schematic.turingpi-worker.id
   talos_version = local.talos_version
 }
