@@ -6,7 +6,7 @@ terraform {
     }
     github = {
       source  = "integrations/github"
-      version = "6.3.1"
+      version = "5.45.0"
     }
     proxmox = {
       source  = "bpg/proxmox"
