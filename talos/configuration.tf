@@ -162,6 +162,18 @@ locals {
           resolveMemberNames   = false
         }
       }
+
+      files = [
+        {
+          path = "/etc/cri/conf.d/20-customization.part"
+          op   = "create"
+          content : <<-EOT
+            [plugins."io.containerd.cri.v1.images"]
+              discard_unpacked_layers = false
+          EOT
+        }
+      ]
+
       kubelet = {
         extraArgs = {
           cloud-provider             = "external"
@@ -390,7 +402,7 @@ resource "github_branch_protection" "flux" {
 
   pattern = "main"
   required_pull_request_reviews {
-    required_approving_review_count = 2
+    required_approving_review_count = 1
   }
   require_signed_commits = true
   lifecycle {
