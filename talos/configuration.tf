@@ -232,7 +232,6 @@ locals {
 
   talos_worker_config = {
     machine = {
-
       kubelet = {
         extraMounts = [{
           source      = "/var/lib/longhorn"
@@ -292,7 +291,7 @@ resource "talos_image_factory_schematic" "proxmox-controlplane" {
     {
       customization = {
         systemExtensions = {
-          officialExtensions = data.talos_image_factory_extensions_versions.proxmox.extensions_info.*.name
+          officialExtensions = data.talos_image_factory_extensions_versions.proxmox.extensions_info[*].name
         }
       }
     }
@@ -306,32 +305,26 @@ data "talos_image_factory_urls" "proxmox-controlplane" {
   talos_version = local.talos_version
 }
 
-data "talos_image_factory_urls" "proxmox-worker" {
-  architecture  = "amd64"
-  platform      = "nocloud"
-  schematic_id  = talos_image_factory_schematic.proxmox-worker.id
-  talos_version = local.talos_version
-}
-
-data "talos_image_factory_urls" "turingpi-worker" {
-  architecture  = "arm64"
-  sbc           = "turingrk1"
-  schematic_id  = talos_image_factory_schematic.turingpi-worker.id
-  talos_version = local.talos_version
-}
 resource "talos_image_factory_schematic" "proxmox-worker" {
   schematic = yamlencode(
     {
       customization = {
         systemExtensions = {
           officialExtensions = setunion(
-            data.talos_image_factory_extensions_versions.proxmox.extensions_info.*.name,
-            data.talos_image_factory_extensions_versions.worker.extensions_info.*.name,
+            data.talos_image_factory_extensions_versions.proxmox.extensions_info[*].name,
+            data.talos_image_factory_extensions_versions.worker.extensions_info[*].name,
           )
         }
       }
     }
   )
+}
+
+data "talos_image_factory_urls" "proxmox-worker" {
+  architecture  = "amd64"
+  platform      = "nocloud"
+  schematic_id  = talos_image_factory_schematic.proxmox-worker.id
+  talos_version = local.talos_version
 }
 
 resource "talos_image_factory_schematic" "turingpi-worker" {
@@ -340,13 +333,20 @@ resource "talos_image_factory_schematic" "turingpi-worker" {
       customization = {
         systemExtensions = {
           officialExtensions = setunion(
-            # data.talos_image_factory_extensions_versions.turingpi.extensions_info.*.name,
-            data.talos_image_factory_extensions_versions.worker.extensions_info.*.name,
+            # data.talos_image_factory_extensions_versions.turingpi.extensions_info[*].name,
+            data.talos_image_factory_extensions_versions.worker.extensions_info[*].name,
           )
         }
       }
     }
   )
+}
+
+data "talos_image_factory_urls" "turingpi-worker" {
+  architecture  = "arm64"
+  sbc           = "turingrk1"
+  schematic_id  = talos_image_factory_schematic.turingpi-worker.id
+  talos_version = local.talos_version
 }
 
 resource "talos_machine_secrets" "secrets" {
