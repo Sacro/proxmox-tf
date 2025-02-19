@@ -258,7 +258,7 @@ locals {
 data "talos_image_factory_extensions_versions" "proxmox" {
   talos_version = local.talos_version
   filters = {
-    names = ["qemu-guest-agent"]
+    names = ["siderolabs/qemu-guest-agent"]
   }
 }
 
