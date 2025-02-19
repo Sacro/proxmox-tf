@@ -8,6 +8,8 @@ output "kubeconfig" {
   sensitive = true
 }
 
+# Installer URLs
+
 output "proxmox-control-plane-installer-url" {
   value = data.talos_image_factory_urls.proxmox-controlplane.urls.installer
 }
@@ -18,4 +20,16 @@ output "proxmox-worker-installer-url" {
 
 output "turingpi-worker-installer-url" {
   value = data.talos_image_factory_urls.turingpi-worker.urls.installer
+}
+
+# Secrets
+
+output "talos_client_configuration" {
+  value     = talos_machine_secrets.secrets.client_configuration
+  sensitive = true
+}
+
+output "talos_machine_secrets" {
+  value     = talos_machine_secrets.secrets.machine_secrets
+  sensitive = true
 }

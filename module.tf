@@ -21,3 +21,13 @@ output "proxmox-worker-installer-url" {
 output "turingpi-worker-installer-url" {
   value = module.talos.turingpi-worker-installer-url
 }
+
+output "talos_client_configuration" {
+  value     = module.talos.talos_client_configuration
+  sensitive = true
+}
+
+output "talos_machine_secrets" {
+  value     = module.talos.talos_machine_secrets
+  sensitive = true
+}
