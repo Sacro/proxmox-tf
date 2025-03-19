@@ -19,6 +19,18 @@ tfupdate = "latest"
 "npm:@commitlint/cli" = "latest"
 "npm:@commitlint/config-conventional" = "latest"
 
+[tasks.refreshTalosConfig]
+description = "Refresh Talos config"
+run = "terraform output -json talosconfig | jq -r .talos_config > ~/.talos/config"
+
+[tasks.removeCompletedPods]
+run = "kubectl delete pod --field-selector=status.phase==Succeeded --all-namespaces"
+
+description = "Remove completed pods"
+
+[tasks.removeFailedPods]
+run = "kubectl delete pod --field-selector=status.phase==Failed --all-namespaces"
+description = "Remove failed pods"
 
 [tasks.updateCiliumHelmTemplate]
 description = "Update Cilium helm template"
@@ -26,7 +38,7 @@ run = """
 helm template \
     cilium \
     cilium/cilium \
-    --version 1.17.1 \
+    --version 1.17.2 \
     --namespace kube-system \
     --set ipam.mode=kubernetes \
     --set kubeProxyReplacement=true \
@@ -40,6 +52,7 @@ helm template \
     --set ingressController.enabled=true \
     --set ingressController.default=true \
     --set ingressController.loadbalancerMode=dedicated \
+    --set bpf.lbExternalClusterIP=true \
     --set bgpControlPlane.enabled=true \
     --set hubble.relay.enabled=true \
     --set hubble.ui.enabled=true \
@@ -55,7 +68,7 @@ run = """
 helm upgrade \
   cilium \
   cilium/cilium \
-  --version 1.17.1 \
+  --version 1.17.2 \
   --namespace kube-system \
   --set ipam.mode=kubernetes \
   --set kubeProxyReplacement=true \
@@ -69,6 +82,7 @@ helm upgrade \
   --set ingressController.enabled=true \
   --set ingressController.default=true \
   --set ingressController.loadbalancerMode=dedicated \
+  --set bpf.lbExternalClusterIP=true \
   --set bgpControlPlane.enabled=true \
   --set hubble.relay.enabled=true \
   --set hubble.ui.enabled=true \
