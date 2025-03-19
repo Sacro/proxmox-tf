@@ -43,6 +43,9 @@ helm template \
     --set bgpControlPlane.enabled=true \
     --set hubble.relay.enabled=true \
     --set hubble.ui.enabled=true \
+    --set gatewayAPI.enabled=true \
+    --set gatewayAPI.enableAlpn=true \
+    --set gatewayAPI.enableAppProtocol=true \
     > cilium.yaml
 """
 
@@ -68,5 +71,8 @@ helm upgrade \
   --set ingressController.loadbalancerMode=dedicated \
   --set bgpControlPlane.enabled=true \
   --set hubble.relay.enabled=true \
-  --set hubble.ui.enabled=true
+  --set hubble.ui.enabled=true \
+    --set gatewayAPI.enabled=true \
+    --set gatewayAPI.enableAlpn=true \
+    --set gatewayAPI.enableAppProtocol=true \
 """
