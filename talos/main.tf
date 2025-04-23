@@ -79,7 +79,7 @@ resource "proxmox_virtual_environment_vm" "talos_controlplane" {
   }
 
   lifecycle {
-    ignore_changes = [agent, disk[0].file_id]
+    ignore_changes = [agent, disk[0].file_id, usb]
   }
 }
 
@@ -154,7 +154,7 @@ resource "proxmox_virtual_environment_vm" "talos_worker" {
   }
 
   lifecycle {
-    ignore_changes = [agent, disk[0].file_id]
+    ignore_changes = [agent, disk[0].file_id, usb]
   }
 }
 
