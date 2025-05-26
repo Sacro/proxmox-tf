@@ -38,7 +38,7 @@ run = """
 helm template \
     cilium \
     cilium/cilium \
-    --version 1.17.3 \
+    --version 1.17.4 \
     --namespace kube-system \
     --set ipam.mode=kubernetes \
     --set kubeProxyReplacement=true \
@@ -68,7 +68,7 @@ run = """
 helm upgrade \
   cilium \
   cilium/cilium \
-  --version 1.17.3 \
+  --version 1.17.4 \
   --namespace kube-system \
   --set ipam.mode=kubernetes \
   --set kubeProxyReplacement=true \
@@ -86,7 +86,7 @@ helm upgrade \
   --set bgpControlPlane.enabled=true \
   --set hubble.relay.enabled=true \
   --set hubble.ui.enabled=true \
-    --set gatewayAPI.enabled=true \
-    --set gatewayAPI.enableAlpn=true \
-    --set gatewayAPI.enableAppProtocol=true \
+  --set gatewayAPI.enabled=true \
+  --set gatewayAPI.enableAlpn=true \
+  --set gatewayAPI.enableAppProtocol=true \
 """
