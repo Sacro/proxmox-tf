@@ -46,12 +46,12 @@ ipam:
 ipv4:
   enabled: true
 
-ipv4NativeRoutingCIDR: "0.0.0.0/0"
+ipv4NativeRoutingCIDR: "10.0.0.8/8"
 
 ipv6:
   enabled: false
 
-ipv6NativeRoutingCIDR: "::0/0"
+ipv6NativeRoutingCIDR: "fd00::/100"
 
 k8sServiceHost: localhost
 k8sServicePort: 7445
