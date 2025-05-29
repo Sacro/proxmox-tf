@@ -171,6 +171,11 @@ resource "talos_machine_configuration_apply" "proxmox_control_plane" {
   machine_configuration_input = data.talos_machine_configuration.control_plane.machine_configuration
   client_configuration        = talos_machine_secrets.secrets.client_configuration
   config_patches = [
+    yamlencode({ machine = {
+      network = {
+        hostname = "${each.value.name}.${local.domain}"
+      }
+    } }),
     yamlencode(module.deepmerge-controlplane-proxmox.merged),
   ]
 
@@ -192,6 +197,11 @@ resource "talos_machine_configuration_apply" "proxmox_worker" {
   machine_configuration_input = data.talos_machine_configuration.worker.machine_configuration
   client_configuration        = talos_machine_secrets.secrets.client_configuration
   config_patches = [
+    yamlencode({ machine = {
+      network = {
+        hostname = "${each.value.name}.${local.domain}"
+      }
+    } }),
     yamlencode(module.deepmerge-worker-proxmox.merged),
     templatefile("${path.module}/extensionserviceconfig/cloudflare-config.yaml", {}),
     # templatefile("${path.module}/extensionserviceconfig/tailscale.yaml", {})
@@ -209,6 +219,11 @@ resource "talos_machine_configuration_apply" "turingpi_worker" {
   machine_configuration_input = data.talos_machine_configuration.worker.machine_configuration
   client_configuration        = talos_machine_secrets.secrets.client_configuration
   config_patches = [
+    yamlencode({ machine = {
+      network = {
+        hostname = "${each.value.name}.${local.domain}"
+      }
+    } }),
     yamlencode(module.deepmerge-worker-turingpi.merged),
     templatefile("${path.module}/extensionserviceconfig/cloudflare-config.yaml", {}),
     # templatefile("${path.module}/extensionserviceconfig/tailscale.yaml", {})

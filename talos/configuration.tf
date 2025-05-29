@@ -30,26 +30,26 @@ locals {
   }])
 
   turingpi_workers = toset([{
-    name         = "talostpi01"
+    name         = "turingnode01"
     address      = "192.168.15.91"
     dhcp_address = "192.168.15.91"
     }, {
-    name         = "talostpi02"
+    name         = "turingnode02"
     address      = "192.168.15.92"
     dhcp_address = "192.168.15.92"
     }, {
-    name         = "talostpi03"
+    name         = "turingnode03"
     address      = "192.168.15.93"
     dhcp_address = "192.168.15.93"
     }, {
-    name         = "talostpi04"
+    name         = "turingnode04"
     address      = "192.168.15.94"
     dhcp_address = "192.168.15.94"
   }])
 
   # workers = setunion(local.proxmox_workers, local.turingpi_workers)
 
-  # domain      = "cluster.benwoodward.cloud"
+  domain      = "benwoodward.network"
   gateway     = "192.168.15.254"
   nameservers = ["2a07:a8c0::32:2151", "2a07:a8c1::32:2151"]
   timeservers = ["time.cloudflare.com"]
