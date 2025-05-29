@@ -72,7 +72,9 @@ resource "proxmox_virtual_environment_vm" "talos_controlplane" {
     floating  = 4096
   }
 
-  network_device {}
+  network_device {
+    queues = 4
+  }
 
   operating_system {
     type = "l26"
@@ -147,7 +149,9 @@ resource "proxmox_virtual_environment_vm" "talos_worker" {
     floating  = 4096
   }
 
-  network_device {}
+  network_device {
+    queues = 4
+  }
 
   operating_system {
     type = "l26"
