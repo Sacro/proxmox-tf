@@ -168,8 +168,14 @@ locals {
           path = "/etc/cri/conf.d/20-customization.part"
           op   = "create"
           content : <<-EOT
+            [metrics]
+              address = "0.0.0.0:11234"
             [plugins."io.containerd.cri.v1.images"]
               discard_unpacked_layers = false
+            [plugins."io.containerd.grpc.v1.cri"]
+              device_ownership_from_security_context = true
+            [plugins."io.containerd.cri.v1.runtime"]
+              cdi_spec_dirs = ["/var/cdi/static", "/var/cdi/dynamic"]
           EOT
         }
       ]
