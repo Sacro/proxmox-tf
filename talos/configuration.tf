@@ -97,12 +97,12 @@ locals {
 
   talos_turingpi_worker_config = {
     machine = {
-      disks = [{
-        device = "/dev/nvme0n1"
-        partitions = [{
-          mountpoint = "/var/lib/longhorn"
-        }]
-      }]
+      # disks = [{
+      #   device = "/dev/nvme0n1"
+      #   partitions = [{
+      #     mountpoint = "/var/lib/longhorn"
+      #   }]
+      # }]
       install = {
         disk  = "/dev/mmcblk0"
         image = data.talos_image_factory_urls.turingpi-worker.urls.disk_image
@@ -243,20 +243,29 @@ locals {
 
   talos_worker_config = {
     machine = {
-      kubelet = {
-        extraMounts = [{
-          source      = "/var/lib/longhorn"
-          destination = "/var/lib/longhorn"
-          type        = "bind"
-          options = [
-            "bind",
-            "rshared",
-            "rw"
-          ]
-        }]
+      # kubelet = {
+      #   extraMounts = [{
+      #     source      = "/var/mnt/longhorn"
+      #     destination = "/var/lib/longhorn"
+      #     type        = "bind"
+      #     options = [
+      #       "bind",
+      #       "rshared",
+      #       "rw"
+      #     ]
+      #   }]
+      # }
+
+      nodeAnnotations = {
+        "node.longhorn.io/default-disks-config" = jsonencode([{
+          allowScheduling = true,
+          path            = "/var/mnt/longhorn",
+        }])
       }
+
       nodeLabels = {
-        bgp-policy = "lb"
+        bgp-policy                             = "lb"
+        "node.longhorn.io/create-default-disk" = "config"
       }
     }
   }
