@@ -1,0 +1,13 @@
+${yamlencode({
+apiVersion = "v1alpha1"
+kind = "UserVolumeConfig"
+name = "local-path-provisioner"
+provisioning = {
+  diskSelector = {
+    match = "${match}"
+  }
+
+  minSize = "50GB"
+  maxSize = "100GB"
+}}
+)}

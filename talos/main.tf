@@ -209,8 +209,12 @@ resource "talos_machine_configuration_apply" "proxmox_worker" {
     yamlencode(module.deepmerge-worker-proxmox.merged),
     templatefile("${path.module}/extensionserviceconfig/cloudflare-config.yaml", {}),
     # templatefile("${path.module}/extensionserviceconfig/tailscale.yaml", {})
-    templatefile("${path.module}/uservolumeconfig/local-path-provisioner.yaml", {}),
-    templatefile("${path.module}/uservolumeconfig/longhorn.yaml", {}),
+    templatefile("${path.module}/uservolumeconfig/local-path-provisioner.tftpl", {
+      match = "disk.dev_path == '/dev/sdb'"
+    }),
+    templatefile("${path.module}/uservolumeconfig/longhorn.tftpl", {
+      match = "disk.dev_path == '/dev/sdb'"
+    }),
   ]
 }
 
@@ -233,8 +237,12 @@ resource "talos_machine_configuration_apply" "turingpi_worker" {
     yamlencode(module.deepmerge-worker-turingpi.merged),
     templatefile("${path.module}/extensionserviceconfig/cloudflare-config.yaml", {}),
     # templatefile("${path.module}/extensionserviceconfig/tailscale.yaml", {})
-    templatefile("${path.module}/uservolumeconfig/local-path-provisioner.yaml", {}),
-    templatefile("${path.module}/uservolumeconfig/longhorn.yaml", {}),
+    templatefile("${path.module}/uservolumeconfig/local-path-provisioner.tftpl", {
+      match = "disk.transport == 'nvme'"
+    }),
+    templatefile("${path.module}/uservolumeconfig/longhorn.tftpl", {
+      match = "disk.transport == 'nvme'"
+    }),
   ]
 }
 

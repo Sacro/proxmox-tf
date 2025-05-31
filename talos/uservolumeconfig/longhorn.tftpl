@@ -1,0 +1,13 @@
+${yamlencode({
+apiVersion = "v1alpha1"
+kind = "UserVolumeConfig"
+name = "longhorn"
+provisioning = {
+  diskSelector = {
+    match = "${match}"
+  }
+
+  minSize = "100GB"
+  maxSize = "1000GB"
+}}
+)}

@@ -1,9 +1,0 @@
----
-apiVersion: v1alpha1
-kind: UserVolumeConfig
-name: local-path-provisioner
-provisioning:
-  diskSelector:
-    match: disk.transport == 'nvme'
-  minSize: 100GB
-  maxSize: 200GB

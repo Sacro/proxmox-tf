@@ -86,12 +86,12 @@ locals {
         image = data.talos_image_factory_urls.proxmox-worker.urls.disk_image
 
       }
-      disks = [{
-        device = "/dev/sdb"
-        partitions = [{
-          mountpoint = "/var/lib/longhorn"
-        }]
-      }]
+      # disks = [{
+      #   device = "/dev/sdb"
+      #   partitions = [{
+      #     mountpoint = "/var/lib/longhorn"
+      #   }]
+      # }]
     }
   }
 
