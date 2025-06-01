@@ -1,0 +1,14 @@
+${yamlencode({
+apiVersion = "v1alpha1"
+kind = "VolumeConfig"
+name = "EPHEMERAL"
+provisioning = {
+  diskSelector = {
+    match = "${match}"
+  }
+
+  minSize = "2GB"
+  maxSize = "40GB"
+  grow = false
+}}
+)}

@@ -121,7 +121,7 @@ resource "proxmox_virtual_environment_vm" "talos_worker" {
     discard      = "on"
     file_format  = "raw"
     interface    = "scsi1"
-    size         = 20
+    size         = 32
     ssd          = true
   }
 
@@ -163,14 +163,9 @@ resource "proxmox_virtual_environment_vm" "talos_worker" {
 }
 
 resource "talos_machine_configuration_apply" "proxmox_control_plane" {
-  for_each = {
-    for index, item in local.proxmox_controlplanes :
-    item.name => item
-  }
+  for_each = proxmox_virtual_environment_vm.talos_controlplane
 
-  depends_on = [proxmox_virtual_environment_vm.talos_controlplane]
-
-  endpoint                    = each.value.address
+  endpoint                    = split("/", each.value.initialization[0].ip_config[0].ipv4[0].address)[0]
   node                        = each.value.name
   machine_configuration_input = data.talos_machine_configuration.control_plane.machine_configuration
   client_configuration        = talos_machine_secrets.secrets.client_configuration
@@ -189,14 +184,9 @@ resource "talos_machine_configuration_apply" "proxmox_control_plane" {
 }
 
 resource "talos_machine_configuration_apply" "proxmox_worker" {
-  for_each = {
-    for index, item in local.proxmox_workers :
-    item.name => item
-  }
+  for_each = proxmox_virtual_environment_vm.talos_worker
 
-  depends_on = [proxmox_virtual_environment_vm.talos_worker]
-
-  endpoint                    = each.value.address
+  endpoint                    = split("/", each.value.initialization[0].ip_config[0].ipv4[0].address)[0]
   node                        = each.value.name
   machine_configuration_input = data.talos_machine_configuration.worker.machine_configuration
   client_configuration        = talos_machine_secrets.secrets.client_configuration
@@ -209,6 +199,9 @@ resource "talos_machine_configuration_apply" "proxmox_worker" {
     yamlencode(module.deepmerge-worker-proxmox.merged),
     templatefile("${path.module}/extensionserviceconfig/cloudflare-config.yaml", {}),
     # templatefile("${path.module}/extensionserviceconfig/tailscale.yaml", {})
+    templatefile("${path.module}/volumeconfig/ephemeral.tftpl", {
+      match = "disk.dev_path == '/dev/sdb'"
+    }),
     templatefile("${path.module}/uservolumeconfig/local-path-provisioner.tftpl", {
       match = "disk.dev_path == '/dev/sdb'"
     }),
@@ -237,6 +230,9 @@ resource "talos_machine_configuration_apply" "turingpi_worker" {
     yamlencode(module.deepmerge-worker-turingpi.merged),
     templatefile("${path.module}/extensionserviceconfig/cloudflare-config.yaml", {}),
     # templatefile("${path.module}/extensionserviceconfig/tailscale.yaml", {})
+    templatefile("${path.module}/volumeconfig/ephemeral.tftpl", {
+      match = "disk.transport == 'nvme'"
+    }),
     templatefile("${path.module}/uservolumeconfig/local-path-provisioner.tftpl", {
       match = "disk.transport == 'nvme'"
     }),
