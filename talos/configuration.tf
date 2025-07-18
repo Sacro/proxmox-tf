@@ -51,7 +51,8 @@ locals {
 
   domain      = "benwoodward.network"
   gateway     = "192.168.15.254"
-  nameservers = ["2a07:a8c0::32:2151", "2a07:a8c1::32:2151"]
+  nameservers = ["192.168.15.254"]
+  # nameservers = ["2a07:a8c0::32:2151", "2a07:a8c1::32:2151"]
   timeservers = ["time.cloudflare.com"]
   subnet      = "24"
 
