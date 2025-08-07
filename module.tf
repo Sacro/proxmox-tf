@@ -1,8 +1,13 @@
 module "talos" {
-  source            = ".//talos"
-  github_org        = var.github_org
-  github_repository = var.github_repository
-  github_token      = var.github_token
+  source             = ".//talos"
+  github_org         = var.github_org
+  github_repository  = var.github_repository
+  github_token       = var.github_token
+  harbor_robot_token = var.harbor_robot_token
+  proxmox_endpoint   = var.proxmox_endpoint
+  proxmox_password   = var.proxmox_password
+  proxmox_token      = var.proxmox_token
+  proxmox_username   = var.proxmox_username
 }
 
 output "talosconfig" {

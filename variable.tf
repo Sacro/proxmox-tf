@@ -11,6 +11,11 @@ variable "github_token" {
   sensitive = true
 }
 
+variable "harbor_robot_token" {
+  type      = string
+  sensitive = true
+}
+
 variable "proxmox_endpoint" {
   type      = string
   sensitive = true

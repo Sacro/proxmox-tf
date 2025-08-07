@@ -136,26 +136,43 @@ locals {
       }
     }
     machine = {
-      # registries = {
-      #   mirrors = {
-      #     "docker.io" = {
-      #       endpoints    = ["http://harbor/v2/proxy-docker.io"],
-      #       overridePath = true
-      #     },
-      #     "ghcr.io" = {
-      #       endpoints    = ["http://harbor/v2/proxy-ghcr.io"]
-      #       overridePath = true
-      #     },
-      #     "gcr.io" = {
-      #       endpoints = ["http://harbor/v2/proxy-gcr.io"],
-      #       overridePath : true
-      #     }
-      #     "registry.k8s.io" = {
-      #       endpoints = ["http://harbor/v2/proxy-registry.k8s.io"],
-      #       overridePath : true
-      #     }
-      #   }
-      # }
+      registries = {
+        config = {
+          "harbor.benwoodward.cloud" = {
+            auth = {
+              username = var.harbor_robot_name
+              password = var.harbor_robot_token
+            }
+          }
+        }
+        mirrors = {
+          "docker.io" = {
+            endpoints    = ["https://harbor.benwoodward.cloud/v2/proxy-docker.io"],
+            overridePath = true
+            skipFallback = true
+          },
+          "ghcr.io" = {
+            endpoints    = ["https://harbor.benwoodward.cloud/v2/ghcr.io"]
+            overridePath = true
+            skipFallback = true
+          },
+          "gcr.io" = {
+            endpoints = ["https://harbor.benwoodward.cloud/v2/gcr.io"],
+            overridePath : true
+            skipFallback = true
+          }
+          "k8s.gcr.io" = {
+            endpoints = ["https://harbor.benwoodward.cloud/v2/k8s.gcr.io"],
+            overridePath : true
+            skipFallback = true
+          }
+          "registry.k8s.io" = {
+            endpoints = ["https://harbor.benwoodward.cloud/v2/registry.k8s.io"],
+            overridePath : true
+            skipFallback = true
+          }
+        }
+      }
 
       features = {
         hostDNS = {
