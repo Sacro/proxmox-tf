@@ -149,27 +149,27 @@ locals {
           "docker.io" = {
             endpoints    = ["https://harbor.benwoodward.cloud/v2/proxy-docker.io"],
             overridePath = true
-            skipFallback = true
+            # skipFallback = true
           },
           "ghcr.io" = {
             endpoints    = ["https://harbor.benwoodward.cloud/v2/ghcr.io"]
             overridePath = true
-            skipFallback = true
+            # skipFallback = true
           },
           "gcr.io" = {
             endpoints = ["https://harbor.benwoodward.cloud/v2/gcr.io"],
             overridePath : true
-            skipFallback = true
+            # skipFallback = true
           }
           "k8s.gcr.io" = {
             endpoints = ["https://harbor.benwoodward.cloud/v2/k8s.gcr.io"],
             overridePath : true
-            skipFallback = true
+            # skipFallback = true
           }
           "registry.k8s.io" = {
             endpoints = ["https://harbor.benwoodward.cloud/v2/registry.k8s.io"],
             overridePath : true
-            skipFallback = true
+            # skipFallback = true
           }
         }
       }
