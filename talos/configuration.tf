@@ -123,7 +123,7 @@ locals {
         enabled = true
         manifests = [
           "https://raw.githubusercontent.com/siderolabs/talos-cloud-controller-manager/main/docs/deploy/cloud-controller-manager.yml",
-          "https://github.com/sergelogvinov/proxmox-cloud-controller-manager/blob/main/docs/deploy/cloud-controller-manager-talos.yml",
+          "https://raw.githubusercontent.com/sergelogvinov/proxmox-cloud-controller-manager/refs/heads/main/docs/deploy/cloud-controller-manager-talos.yml",
         ]
       }
       network = {
@@ -220,7 +220,7 @@ locals {
     cluster = {
       extraManifests = [
         "https://raw.githubusercontent.com/alex1989hu/kubelet-serving-cert-approver/main/deploy/standalone-install.yaml",
-        "https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml"
+        "https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml",
       ]
       inlineManifests = [{
         name = "cilium"
