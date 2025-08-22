@@ -119,6 +119,9 @@ locals {
 
   talos_config = {
     cluster = {
+      coreDNS = {
+        disabled = true
+      }
       externalCloudProvider = {
         enabled = true
         manifests = [
@@ -136,6 +139,44 @@ locals {
       }
     }
     machine = {
+      features = {
+        hostDNS = {
+          enabled            = true
+          resolveMemberNames = true
+        }
+      }
+
+      files = [
+        {
+          path = "/etc/cri/conf.d/20-customization.part"
+          op   = "create"
+          content : <<-EOT
+          [metrics]
+          address = "0.0.0.0:11234"
+          [plugins."io.containerd.cri.v1.images"]
+          discard_unpacked_layers = false
+          [plugins."io.containerd.grpc.v1.cri"]
+          device_ownership_from_security_context = true
+          [plugins."io.containerd.cri.v1.runtime"]
+          cdi_spec_dirs = ["/var/cdi/static", "/var/cdi/dynamic"]
+          EOT
+        }
+      ]
+
+      kubelet = {
+        clusterDNS = ["10.96.0.10"]
+
+        extraArgs = {
+          cloud-provider             = "external"
+          rotate-server-certificates = true
+        }
+      }
+
+      network = {
+        disableSearchDomain = true
+        nameservers         = local.nameservers
+      }
+
       registries = {
         config = {
           "harbor.benwoodward.cloud" = {
@@ -172,42 +213,6 @@ locals {
             # skipFallback = true
           }
         }
-      }
-
-      features = {
-        hostDNS = {
-          enabled            = true
-          resolveMemberNames = true
-        }
-      }
-
-      files = [
-        {
-          path = "/etc/cri/conf.d/20-customization.part"
-          op   = "create"
-          content : <<-EOT
-            [metrics]
-              address = "0.0.0.0:11234"
-            [plugins."io.containerd.cri.v1.images"]
-              discard_unpacked_layers = false
-            [plugins."io.containerd.grpc.v1.cri"]
-              device_ownership_from_security_context = true
-            [plugins."io.containerd.cri.v1.runtime"]
-              cdi_spec_dirs = ["/var/cdi/static", "/var/cdi/dynamic"]
-          EOT
-        }
-      ]
-
-      kubelet = {
-        extraArgs = {
-          cloud-provider             = "external"
-          rotate-server-certificates = true
-        }
-      }
-
-      network = {
-        disableSearchDomain = true
-        nameservers         = local.nameservers
       }
 
       time = {
