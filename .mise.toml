@@ -18,6 +18,7 @@ tfupdate = "latest"
 "npm:commitlint" = "latest"
 "npm:@commitlint/cli" = "latest"
 "npm:@commitlint/config-conventional" = "latest"
+cosign = "latest"
 
 [tasks.refreshTalosConfig]
 description = "Refresh Talos config"
