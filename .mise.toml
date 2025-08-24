@@ -33,6 +33,17 @@ description = "Remove completed pods"
 run = "kubectl delete pod --field-selector=status.phase==Failed --all-namespaces"
 description = "Remove failed pods"
 
+[tasks.installCoreDNSviaHelm]
+description = "Install CoreDNS via helm"
+run = """
+helm install \
+    coredns \
+    coredns/coredns \
+    --namespace kube-system \
+    --set k8sAppLabelOverride=kube-dns \
+    --set service.clusterIP=10.96.0.10
+"""
+
 [tasks.updateCiliumHelmTemplate]
 description = "Update Cilium helm template"
 run = """
