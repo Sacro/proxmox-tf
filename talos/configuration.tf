@@ -308,7 +308,9 @@ data "talos_image_factory_extensions_versions" "proxmox" {
 data "talos_image_factory_extensions_versions" "turingpi" {
   talos_version = local.talos_version
   filters = {
-    names = []
+    names = [
+      "siderolabs/panfrost"
+    ]
   }
 }
 
@@ -376,10 +378,15 @@ resource "talos_image_factory_schematic" "turingpi-worker" {
       customization = {
         systemExtensions = {
           officialExtensions = setunion(
-            # data.talos_image_factory_extensions_versions.turingpi.extensions_info[*].name,
+            data.talos_image_factory_extensions_versions.turingpi.extensions_info[*].name,
             data.talos_image_factory_extensions_versions.worker.extensions_info[*].name,
           )
         }
+      }
+
+      overlay = {
+        name  = "turingrk1"
+        image = "siderolabs/sbc-rockchip"
       }
     }
   )
