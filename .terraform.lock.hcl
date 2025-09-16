@@ -115,6 +115,29 @@ provider "registry.terraform.io/integrations/github" {
   ]
 }
 
+provider "registry.terraform.io/isometry/deepmerge" {
+  version     = "1.1.0"
+  constraints = "~> 1.0"
+  hashes = [
+    "h1:NS/J39I/Nz0rmE7+2YVKh7GtZ1yL7Bym6Gw+XtftNGM=",
+    "zh:2f2740a211804df959835089cbac1b8b205c69ceaeac11c573bbac3a244f185d",
+    "zh:43c478dae7c2cebf247d0511b4c0551570d2895035eb503f59e013b652ba8b8c",
+    "zh:5b094696b63c34739280bb7115b807a4bb5263ec1dddf9567b422fef7e740485",
+    "zh:71126d06cf54bba8864735ad578bd30ba4482ca873aa60e4bb59a055951764ed",
+    "zh:735a1096233099a9255ab9126b66d8e5cdb54ee165ed3563c7255394d70910d8",
+    "zh:7e10ccc19f1c1590460fe497b6459f8b69a819155d7ea2932ed93a75602b6906",
+    "zh:86abf295922f8517a8c145f067efbc8a3fb37934bec1d851e60c49e42370dcbb",
+    "zh:890df766e9b839623b1f0437355032a3c006226a6c200cd911e15ee1a9014e9f",
+    "zh:8944fd0f27bff288deb998e8c301e1afff8af89dc013b06c557d2c6637fa3dc9",
+    "zh:992be4caf59c7b8a1a192bc8e70cd111245c65133da7aadd91100d0d46f17c33",
+    "zh:9a79c9601054bf885685fc6abbde104d8e3314f5810a2a536faece8696c90e0b",
+    "zh:a491028bf46cb0453e3dca1bc3a0a69cef30cc22eec01b257b91a12c6777cdcc",
+    "zh:bb6874b2fff7b46294e6052e3a9b1e5d8ef4d9e622ce69871b9b7ff4622ed225",
+    "zh:df4abbd143f07cbaed7591ddb2cb8b6da95310ae9c1228af61abe1559a4f9818",
+    "zh:f7c1fff3e1c97ff3108bc5718dae3cf54e36ead6a89c8c7b65f5a74a32123683",
+  ]
+}
+
 provider "registry.terraform.io/siderolabs/talos" {
   version     = "0.9.0"
   constraints = "0.9.0"
