@@ -135,6 +135,14 @@ resource "proxmox_virtual_environment_vm" "talos_worker" {
     ssd          = true
   }
 
+  hostpci {
+    device = "hostpci0"
+    id     = "0000:00:02.0"
+    pcie   = false
+    rombar = true
+    xvga   = false
+  }
+
   initialization {
     ip_config {
       ipv4 {

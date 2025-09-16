@@ -358,6 +358,7 @@ resource "talos_image_factory_schematic" "proxmox-worker" {
           officialExtensions = setunion(
             data.talos_image_factory_extensions_versions.proxmox.extensions_info[*].name,
             data.talos_image_factory_extensions_versions.worker.extensions_info[*].name,
+            ["siderolabs/i915-ucode"],
           )
         }
       }
