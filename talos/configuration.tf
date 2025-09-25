@@ -207,6 +207,11 @@ locals {
             overridePath : true
             # skipFallback = true
           }
+          "quay.io" = {
+            endpoints = ["https://harbor.benwoodward.cloud/v2/quay.io"],
+            overridePath : true
+            # skipFallback = true
+          }
           "registry.k8s.io" = {
             endpoints = ["https://harbor.benwoodward.cloud/v2/registry.k8s.io"],
             overridePath : true
