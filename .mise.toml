@@ -50,7 +50,7 @@ run = """
 helm template \
     cilium \
     cilium/cilium \
-    --version 1.18.0 \
+    --version 1.18.2 \
     --namespace kube-system \
     --set ipam.mode=kubernetes \
     --set kubeProxyReplacement=true \
@@ -80,7 +80,7 @@ run = """
 helm upgrade \
   cilium \
   cilium/cilium \
-  --version 1.18.0 \
+  --version 1.18.2 \
   --namespace kube-system \
   --set ipam.mode=kubernetes \
   --set kubeProxyReplacement=true \
