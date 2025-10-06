@@ -29,9 +29,11 @@ resource "proxmox_virtual_environment_vm" "talos_controlplane" {
   }
 
   cpu {
-    cores = 4
-    type  = "x86-64-v2-AES"
-    units = 200
+    cores      = 4
+    hotplugged = 2
+    limit      = 4
+    type       = "host"
+    units      = 200
   }
 
   # Holds the installer
@@ -101,9 +103,11 @@ resource "proxmox_virtual_environment_vm" "talos_worker" {
   }
 
   cpu {
-    cores = 4
-    type  = "x86-64-v2-AES"
-    units = 100 // default, but should mean control plane isn't locked out
+    cores      = 4
+    hotplugged = 2
+    limit      = 4
+    type       = "host"
+    units      = 100 // default, but should mean control plane isn't locked out
   }
 
   # Holds the installer
