@@ -170,6 +170,42 @@ resource "proxmox_virtual_environment_vm" "talos_worker" {
   }
 }
 
+resource "talos_machine_configuration_apply" "hyperv_worker" {
+  for_each = {
+    for index, item in local.hyperv_workers :
+    item.name => item
+  }
+
+  endpoint                    = each.value.address
+  node                        = each.value.name
+  machine_configuration_input = data.talos_machine_configuration.worker.machine_configuration
+  client_configuration        = talos_machine_secrets.secrets.client_configuration
+  config_patches = [
+    yamlencode(provider::deepmerge::mergo(
+      { machine = {
+        network = {
+          hostname = "${each.value.name}.${local.domain}"
+        }
+      } },
+      local.talos_config,
+      local.talos_worker_config,
+      local.talos_hyperv_worker_config,
+      "append"
+    )),
+    templatefile("${path.module}/extensionserviceconfig/cloudflare-config.yaml", {}),
+    # templatefile("${path.module}/extensionserviceconfig/tailscale.yaml", {})
+    templatefile("${path.module}/volumeconfig/ephemeral.tftpl", {
+      match = "disk.dev_path == '/dev/sdb'"
+    }),
+    templatefile("${path.module}/uservolumeconfig/local-path-provisioner.tftpl", {
+      match = "disk.dev_path == '/dev/sdb'"
+    }),
+    templatefile("${path.module}/uservolumeconfig/longhorn.tftpl", {
+      match = "disk.dev_path == '/dev/sdb'"
+    }),
+  ]
+}
+
 resource "talos_machine_configuration_apply" "proxmox_control_plane" {
   for_each = proxmox_virtual_environment_vm.talos_controlplane
 

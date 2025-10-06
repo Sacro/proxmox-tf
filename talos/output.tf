@@ -10,6 +10,10 @@ output "kubeconfig" {
 
 # Installer URLs
 
+output "hyperv-worker-installer-url" {
+  value = data.talos_image_factory_urls.hyperv-worker.urls.installer
+}
+
 output "proxmox-control-plane-installer-url" {
   value = data.talos_image_factory_urls.proxmox-controlplane.urls.installer
 }

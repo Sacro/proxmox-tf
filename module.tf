@@ -15,6 +15,10 @@ output "talosconfig" {
   sensitive = true
 }
 
+output "hyperv-worker-installer-url" {
+  value = module.talos.hyperv-worker-installer-url
+}
+
 output "proxmox-control-plane-installer-url" {
   value = module.talos.proxmox-control-plane-installer-url
 }

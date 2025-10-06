@@ -1,4 +1,9 @@
 locals {
+  hyperv_workers = toset([{
+    name    = "taloshvw01"
+    address = "192.168.15.71"
+  }])
+
   proxmox_controlplanes = toset([{
     node    = "proxmox01"
     name    = "taloscp01"
@@ -67,9 +72,18 @@ locals {
   ])
 
   talos_amd64_filename = "nocloud-amd64.raw.xz"
-  talos_version        = "v1.10.1"
+  talos_version        = "v1.11.2"
 
   talos_amd64_url = "https://factory.talos.dev/image/376567988ad370138ad8b2698212367b8edcb69b5fd68c80be1f2ec7d603b4ba/${local.talos_version}/${local.talos_amd64_filename}"
+
+  talos_hyperv_worker_config = {
+    machine = {
+      install = {
+        disk  = "/dev/sda"
+        image = data.talos_image_factory_urls.hyperv-worker.urls.installer
+      }
+    }
+  }
 
   talos_proxmox_controlplane_config = {
     machine = {
@@ -335,6 +349,27 @@ data "talos_image_factory_extensions_versions" "worker" {
   }
 }
 
+resource "talos_image_factory_schematic" "hyperv-worker" {
+  schematic = yamlencode(
+    {
+      customization = {
+        systemExtensions = {
+          officialExtensions = setunion(
+            # data.talos_image_factory_extensions_versions.hyper-v.extensions_info[*].name,
+            data.talos_image_factory_extensions_versions.worker.extensions_info[*].name,
+          )
+        }
+      }
+    }
+  )
+}
+
+data "talos_image_factory_urls" "hyperv-worker" {
+  architecture  = "amd64"
+  platform      = "metal"
+  schematic_id  = talos_image_factory_schematic.hyperv-worker.id
+  talos_version = local.talos_version
+}
 
 resource "talos_image_factory_schematic" "proxmox-controlplane" {
   schematic = yamlencode(
@@ -350,7 +385,7 @@ resource "talos_image_factory_schematic" "proxmox-controlplane" {
 
 data "talos_image_factory_urls" "proxmox-controlplane" {
   architecture  = "amd64"
-  platform      = "nocloud"
+  platform      = "metal"
   schematic_id  = talos_image_factory_schematic.proxmox-controlplane.id
   talos_version = local.talos_version
 }
