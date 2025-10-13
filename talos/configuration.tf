@@ -133,9 +133,17 @@ locals {
 
   talos_config = {
     cluster = {
+
+      controllerManager = {
+        extraArgs = {
+          bind-address = "0.0.0.0"
+        }
+      }
+
       coreDNS = {
         disabled = true
       }
+
       externalCloudProvider = {
         enabled = true
         manifests = [
@@ -151,6 +159,25 @@ locals {
       proxy = {
         disabled = true
       }
+
+
+      scheduler = {
+        extraArgs = {
+          bind-address = "0.0.0.0"
+        }
+      }
+
+
+      extraManifests = [
+        "https://raw.githubusercontent.com/alex1989hu/kubelet-serving-cert-approver/main/deploy/standalone-install.yaml",
+        "https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml",
+      ]
+      inlineManifests = [{
+        name = "cilium"
+        contents = templatefile("${path.module}/cilium.yaml", {
+          BIN_PATH = "$${BIN_PATH}"
+        })
+      }]
     }
     machine = {
       features = {
@@ -200,38 +227,38 @@ locals {
             }
           }
         }
-        mirrors = {
-          "docker.io" = {
-            endpoints    = ["https://harbor.benwoodward.cloud/v2/proxy-docker.io"],
-            overridePath = true
-            # skipFallback = true
-          },
-          "ghcr.io" = {
-            endpoints    = ["https://harbor.benwoodward.cloud/v2/ghcr.io"]
-            overridePath = true
-            # skipFallback = true
-          },
-          "gcr.io" = {
-            endpoints = ["https://harbor.benwoodward.cloud/v2/gcr.io"],
-            overridePath : true
-            # skipFallback = true
-          }
-          "k8s.gcr.io" = {
-            endpoints = ["https://harbor.benwoodward.cloud/v2/k8s.gcr.io"],
-            overridePath : true
-            # skipFallback = true
-          }
-          "quay.io" = {
-            endpoints = ["https://harbor.benwoodward.cloud/v2/quay.io"],
-            overridePath : true
-            # skipFallback = true
-          }
-          "registry.k8s.io" = {
-            endpoints = ["https://harbor.benwoodward.cloud/v2/registry.k8s.io"],
-            overridePath : true
-            # skipFallback = true
-          }
-        }
+        # mirrors = {
+        #   "docker.io" = {
+        #     endpoints    = ["https://harbor.benwoodward.cloud/v2/proxy-docker.io"],
+        #     overridePath = true
+        #     # skipFallback = true
+        #   },
+        #   "ghcr.io" = {
+        #     endpoints    = ["https://harbor.benwoodward.cloud/v2/ghcr.io"]
+        #     overridePath = true
+        #     # skipFallback = true
+        #   },
+        #   "gcr.io" = {
+        #     endpoints = ["https://harbor.benwoodward.cloud/v2/gcr.io"],
+        #     overridePath : true
+        #     # skipFallback = true
+        #   }
+        #   "k8s.gcr.io" = {
+        #     endpoints = ["https://harbor.benwoodward.cloud/v2/k8s.gcr.io"],
+        #     overridePath : true
+        #     # skipFallback = true
+        #   }
+        #   "quay.io" = {
+        #     endpoints = ["https://harbor.benwoodward.cloud/v2/quay.io"],
+        #     overridePath : true
+        #     # skipFallback = true
+        #   }
+        #   "registry.k8s.io" = {
+        #     endpoints = ["https://harbor.benwoodward.cloud/v2/registry.k8s.io"],
+        #     overridePath : true
+        #     # skipFallback = true
+        #   }
+        # }
       }
 
       time = {
@@ -241,18 +268,6 @@ locals {
   }
 
   talos_controlplane_config = {
-    cluster = {
-      extraManifests = [
-        "https://raw.githubusercontent.com/alex1989hu/kubelet-serving-cert-approver/main/deploy/standalone-install.yaml",
-        "https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml",
-      ]
-      inlineManifests = [{
-        name = "cilium"
-        contents = templatefile("${path.module}/cilium.yaml", {
-          BIN_PATH = "$${BIN_PATH}"
-        })
-      }]
-    }
     machine = {
       features = {
         kubePrism = {
@@ -455,6 +470,12 @@ data "talos_machine_configuration" "control_plane" {
   cluster_name     = local.cluster_name
   machine_secrets  = talos_machine_secrets.secrets.machine_secrets
   machine_type     = "controlplane"
+
+  config_patches = [yamlencode(provider::deepmerge::mergo(
+    local.talos_config,
+    local.talos_controlplane_config,
+    "append"
+  ))]
 }
 
 data "talos_machine_configuration" "worker" {
@@ -462,6 +483,12 @@ data "talos_machine_configuration" "worker" {
   cluster_name     = local.cluster_name
   machine_secrets  = talos_machine_secrets.secrets.machine_secrets
   machine_type     = "worker"
+
+  config_patches = [yamlencode(provider::deepmerge::mergo(
+    local.talos_config,
+    local.talos_worker_config,
+    "append"
+  ))]
 }
 
 data "talos_client_configuration" "client" {

@@ -29,11 +29,9 @@ resource "proxmox_virtual_environment_vm" "talos_controlplane" {
   }
 
   cpu {
-    cores      = 4
-    hotplugged = 2
-    limit      = 4
-    type       = "host"
-    units      = 200
+    cores = 4
+    type  = "host"
+    units = 200
   }
 
   # Holds the installer
@@ -70,8 +68,7 @@ resource "proxmox_virtual_environment_vm" "talos_controlplane" {
   }
 
   memory {
-    dedicated = 8192
-    floating  = 4096
+    dedicated = 4096
   }
 
   network_device {
@@ -103,11 +100,9 @@ resource "proxmox_virtual_environment_vm" "talos_worker" {
   }
 
   cpu {
-    cores      = 4
-    hotplugged = 2
-    limit      = 4
-    type       = "host"
-    units      = 100 // default, but should mean control plane isn't locked out
+    cores = 4
+    type  = "host"
+    units = 100 // default, but should mean control plane isn't locked out
   }
 
   # Holds the installer
@@ -158,7 +153,6 @@ resource "proxmox_virtual_environment_vm" "talos_worker" {
 
   memory {
     dedicated = 8192
-    floating  = 4096
   }
 
   network_device {
@@ -191,8 +185,6 @@ resource "talos_machine_configuration_apply" "hyperv_worker" {
           hostname = "${each.value.name}.${local.domain}"
         }
       } },
-      local.talos_config,
-      local.talos_worker_config,
       local.talos_hyperv_worker_config,
       "append"
     )),
@@ -224,8 +216,6 @@ resource "talos_machine_configuration_apply" "proxmox_control_plane" {
           hostname = "${each.value.name}.${local.domain}"
         }
       } },
-      local.talos_config,
-      local.talos_controlplane_config,
       local.talos_proxmox_controlplane_config,
       "append"
     )),
@@ -250,8 +240,6 @@ resource "talos_machine_configuration_apply" "proxmox_worker" {
           hostname = "${each.value.name}.${local.domain}"
         }
       } },
-      local.talos_config,
-      local.talos_worker_config,
       local.talos_proxmox_worker_config,
       "append"
     )),
@@ -286,8 +274,6 @@ resource "talos_machine_configuration_apply" "turingpi_worker" {
           hostname = "${each.value.name}.${local.domain}"
         }
       } },
-      local.talos_config,
-      local.talos_worker_config,
       local.talos_turingpi_worker_config,
       "append"
     )),
