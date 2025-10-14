@@ -60,6 +60,7 @@ helm template \
     --set cgroup.hostRoot=/sys/fs/cgroup \
     --set k8sServiceHost=localhost \
     --set k8sServicePort=7445 \
+    --set hostFirewall.enabled=true \
     --set loadBalancer.acceleration=native \
     --set ingressController.enabled=true \
     --set ingressController.default=true \
@@ -90,6 +91,7 @@ helm upgrade \
   --set cgroup.hostRoot=/sys/fs/cgroup \
   --set k8sServiceHost=localhost \
   --set k8sServicePort=7445 \
+  --set hostFirewall.enabled=true \
   --set loadBalancer.acceleration=native \
   --set ingressController.enabled=true \
   --set ingressController.default=true \
