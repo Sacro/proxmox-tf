@@ -21,8 +21,9 @@ resource "proxmox_virtual_environment_vm" "talos_controlplane" {
 
   node_name = each.value.node
 
-  name = each.value.name
-  tags = ["talos", "terraform"]
+  name          = each.value.name
+  scsi_hardware = "virtio-scsi-single"
+  tags          = ["talos", "terraform"]
 
   agent {
     enabled = false
@@ -51,6 +52,7 @@ resource "proxmox_virtual_environment_vm" "talos_controlplane" {
     interface    = "scsi1"
     size         = 20
     ssd          = true
+    iothread     = true
   }
 
   initialization {
@@ -68,7 +70,7 @@ resource "proxmox_virtual_environment_vm" "talos_controlplane" {
   }
 
   memory {
-    dedicated = 6144
+    dedicated = 4096 # Seems to be enough, leave some for host
   }
 
   network_device {
@@ -92,8 +94,9 @@ resource "proxmox_virtual_environment_vm" "talos_worker" {
 
   node_name = each.value.node
 
-  name = each.value.name
-  tags = ["talos", "terraform"]
+  name          = each.value.name
+  scsi_hardware = "virtio-scsi-single"
+  tags          = ["talos", "terraform"]
 
   agent {
     enabled = false
@@ -112,6 +115,7 @@ resource "proxmox_virtual_environment_vm" "talos_worker" {
     interface    = "scsi0"
     discard      = "on"
     size         = 10
+    iothread     = true
   }
 
   # Holds the OS
@@ -122,6 +126,7 @@ resource "proxmox_virtual_environment_vm" "talos_worker" {
     interface    = "scsi1"
     size         = 32
     ssd          = true
+    iothread     = true
   }
 
   # Storage partition
@@ -132,6 +137,7 @@ resource "proxmox_virtual_environment_vm" "talos_worker" {
     interface    = "scsi2"
     size         = 250
     ssd          = true
+    iothread     = true
   }
 
   hostpci {
