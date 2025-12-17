@@ -26,7 +26,7 @@ terraform {
     }
   }
 
-  required_version = "1.14.2"
+  required_version = "1.14.3"
 }
 
 provider "flux" {
