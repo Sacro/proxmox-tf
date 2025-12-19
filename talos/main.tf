@@ -32,7 +32,7 @@ resource "proxmox_virtual_environment_vm" "talos_controlplane" {
   cpu {
     cores = 4
     type  = "host"
-    units = 200
+    units = 100
   }
 
   # Holds the installer
