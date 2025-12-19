@@ -70,7 +70,7 @@ resource "proxmox_virtual_environment_vm" "talos_controlplane" {
   }
 
   memory {
-    dedicated = 4096 # Seems to be enough, leave some for host
+    dedicated = 6144 # Seems to be enough, leave some for host
   }
 
   network_device {
