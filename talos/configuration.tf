@@ -1,8 +1,14 @@
 locals {
-  hyperv_workers = toset([{
-    name    = "taloshvw01"
-    address = "192.168.15.71"
-  }])
+  beelink_nodes = toset([
+
+  ])
+
+  hyperv_workers = toset([
+    # {
+    #   name    = "taloshvw01"
+    #   address = "192.168.15.71"
+    # }
+  ])
 
   proxmox_controlplanes = toset([{
     node    = "proxmox01"
@@ -75,6 +81,15 @@ locals {
   talos_version        = "v1.11.2"
 
   talos_amd64_url = "https://factory.talos.dev/image/376567988ad370138ad8b2698212367b8edcb69b5fd68c80be1f2ec7d603b4ba/${local.talos_version}/${local.talos_amd64_filename}"
+
+  talos_beelink_node_config = {
+    machine = {
+      install = {
+        disk  = "/dev/sda"
+        image = data.talos_image_factory_urls.hyperv-worker.urls.installer
+      }
+    }
+  }
 
   talos_hyperv_worker_config = {
     machine = {
@@ -332,6 +347,16 @@ locals {
   cluster_vip      = "192.168.15.150"
 }
 
+data "talos_image_factory_extensions_versions" "beelink" {
+  talos_version = local.talos_version
+  filters = {
+    names = [
+      "siderolabs/i915-ucode",
+      "siderolabs/intel-ucode",
+    ]
+  }
+}
+
 data "talos_image_factory_extensions_versions" "proxmox" {
   talos_version = local.talos_version
   filters = {
@@ -364,6 +389,21 @@ data "talos_image_factory_extensions_versions" "worker" {
   }
 }
 
+resource "talos_image_factory_schematic" "beelink-node" {
+  schematic = yamlencode(
+    {
+      customization = {
+        systemExtensions = {
+          officialExtensions = setunion(
+            data.talos_image_factory_extensions_versions.beelink.extensions_info[*].name,
+            data.talos_image_factory_extensions_versions.worker.extensions_info[*].name,
+          )
+        }
+      }
+    }
+  )
+}
+
 resource "talos_image_factory_schematic" "hyperv-worker" {
   schematic = yamlencode(
     {
@@ -377,6 +417,13 @@ resource "talos_image_factory_schematic" "hyperv-worker" {
       }
     }
   )
+}
+
+data "talos_image_factory_urls" "beelink-node" {
+  architecture  = "amd64"
+  platform      = "metal"
+  schematic_id  = talos_image_factory_schematic.beelink-node.id
+  talos_version = local.talos_version
 }
 
 data "talos_image_factory_urls" "hyperv-worker" {
