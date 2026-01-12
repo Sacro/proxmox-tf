@@ -12,13 +12,9 @@ terraform {
       source  = "integrations/github"
       version = "6.9.0"
     }
-    proxmox = {
-      source  = "bpg/proxmox"
-      version = "0.90.0"
-    }
     talos = {
       source  = "siderolabs/talos"
-      version = "0.10.0"
+      version = "0.9.0"
     }
     tls = {
       source  = "hashicorp/tls"
@@ -27,18 +23,4 @@ terraform {
   }
 
   required_version = "1.14.3"
-}
-
-provider "proxmox" {
-  endpoint  = var.proxmox_endpoint
-  api_token = var.proxmox_token
-  username  = var.proxmox_username
-  password  = var.proxmox_password
-  # insecure  = true
-
-  ssh {
-    agent    = false
-    username = "root"
-    password = var.proxmox_password
-  }
 }

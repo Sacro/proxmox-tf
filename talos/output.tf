@@ -10,6 +10,10 @@ output "kubeconfig" {
 
 # Installer URLs
 
+output "beelink-node-installer-url" {
+  value = data.talos_image_factory_urls.beelink-node.urls.installer
+}
+
 output "hyperv-worker-installer-url" {
   value = data.talos_image_factory_urls.hyperv-worker.urls.installer
 }

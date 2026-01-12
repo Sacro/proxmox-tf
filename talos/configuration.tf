@@ -1,7 +1,14 @@
 locals {
-  beelink_nodes = toset([
-
-  ])
+  beelink_nodes = toset([{
+    name    = "beelinknode01",
+    address = "192.168.15.151",
+    }, {
+    name    = "beelinknode02",
+    address = "192.168.15.152",
+    }, {
+    name    = "beelinknode03"
+    address = "192.168.15.153",
+  }])
 
   hyperv_workers = toset([
     # {
@@ -10,35 +17,11 @@ locals {
     # }
   ])
 
-  proxmox_controlplanes = toset([{
-    node    = "proxmox01"
-    name    = "taloscp01"
-    address = "192.168.15.161"
-    }, {
-    node    = "proxmox02"
-    name    = "taloscp02"
-    address = "192.168.15.171"
-    }, {
-    node    = "proxmox03"
-    name    = "taloscp03"
-    address = "192.168.15.181"
-  }])
+  proxmox_controlplanes = toset([])
 
-  controlplanes = setunion(local.proxmox_controlplanes)
+  controlplanes = setunion(local.proxmox_controlplanes, local.beelink_nodes)
 
-  proxmox_workers = toset([{
-    node    = "proxmox01"
-    name    = "talosw01"
-    address = "192.168.15.211"
-    }, {
-    node    = "proxmox02"
-    name    = "talosw02"
-    address = "192.168.15.221"
-    }, {
-    node    = "proxmox03"
-    name    = "talosw03"
-    address = "192.168.15.231"
-  }])
+  proxmox_workers = toset([])
 
   turingpi_workers = toset([{
     name         = "turingnode01"
@@ -61,67 +44,21 @@ locals {
   # workers = setunion(local.proxmox_workers, local.turingpi_workers)
 
   domain      = "benwoodward.network"
-  gateway     = "192.168.15.254"
   nameservers = ["192.168.15.254"]
   # nameservers = ["2a07:a8c0::32:2151", "2a07:a8c1::32:2151"]
   timeservers = ["time.cloudflare.com"]
-  subnet      = "24"
 
-  # crane export ghcr.io/nberlee/extensions:v<talos-version> | tar x -O image-digests | grep <extension-name>
-  talos_turingpi_extensions = toset([
-    # {
-    #   image = "ghcr.io/nberlee/binfmt-misc:v1.6.7@sha256:2c7bd83188642bfe1a209026bc4f35d736c5d0d1ec34ed73dadb76ecd17e7f81"
-    # },
-    {
-      image = "ghcr.io/nberlee/rk3588:v1.7.6@sha256:efe9e70c56854c938acad971075009892e7163e6e4e062f4c1ea4ed6557c21c8"
-    }
-  ])
-
-  talos_amd64_filename = "nocloud-amd64.raw.xz"
-  talos_version        = "v1.11.2"
-
-  talos_amd64_url = "https://factory.talos.dev/image/376567988ad370138ad8b2698212367b8edcb69b5fd68c80be1f2ec7d603b4ba/${local.talos_version}/${local.talos_amd64_filename}"
+  talos_version = "1.12.1"
 
   talos_beelink_node_config = {
     machine = {
       install = {
-        disk  = "/dev/sda"
-        image = data.talos_image_factory_urls.hyperv-worker.urls.installer
+        disk  = "/dev/nvme0n1"
+        image = data.talos_image_factory_urls.beelink-node.urls.installer
+        extraKernelArgs = [
+          "cpufreq.default_governor=ondemand"
+        ]
       }
-    }
-  }
-
-  talos_hyperv_worker_config = {
-    machine = {
-      install = {
-        disk  = "/dev/sda"
-        image = data.talos_image_factory_urls.hyperv-worker.urls.installer
-      }
-    }
-  }
-
-  talos_proxmox_controlplane_config = {
-    machine = {
-      install = {
-        disk  = "/dev/sdb"
-        image = data.talos_image_factory_urls.proxmox-controlplane.urls.disk_image
-      }
-    }
-  }
-
-  talos_proxmox_worker_config = {
-    machine = {
-      install = {
-        disk  = "/dev/sdc"
-        image = data.talos_image_factory_urls.proxmox-worker.urls.disk_image
-
-      }
-      # disks = [{
-      #   device = "/dev/sdb"
-      #   partitions = [{
-      #     mountpoint = "/var/lib/longhorn"
-      #   }]
-      # }]
     }
   }
 
@@ -148,6 +85,8 @@ locals {
 
   talos_config = {
     cluster = {
+
+      allowSchedulingOnControlPlanes = true
 
       controllerManager = {
         extraArgs = {
@@ -353,6 +292,7 @@ data "talos_image_factory_extensions_versions" "beelink" {
     names = [
       "siderolabs/i915-ucode",
       "siderolabs/intel-ucode",
+      "siderolabs/realtek-firmware",
     ]
   }
 }
@@ -510,6 +450,21 @@ resource "talos_machine_secrets" "secrets" {
       talos_version
     ]
   }
+}
+
+data "talos_machine_configuration" "beelink_node" {
+  cluster_endpoint = local.cluster_endpoint
+  cluster_name     = local.cluster_name
+  machine_secrets  = talos_machine_secrets.secrets.machine_secrets
+  machine_type     = "controlplane"
+
+  config_patches = [yamlencode(provider::deepmerge::mergo(
+    local.talos_config,
+    local.talos_controlplane_config,
+    local.talos_worker_config,
+    "append"
+  ))]
+
 }
 
 data "talos_machine_configuration" "control_plane" {

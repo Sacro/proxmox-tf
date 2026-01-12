@@ -61,7 +61,7 @@ helm template \
     --set k8sServiceHost=localhost \
     --set k8sServicePort=7445 \
     --set hostFirewall.enabled=true \
-    --set loadBalancer.acceleration=native \
+    --set loadBalancer.acceleration=disabled \
     --set ingressController.enabled=true \
     --set ingressController.default=true \
     --set ingressController.loadbalancerMode=dedicated \
@@ -92,7 +92,7 @@ helm upgrade \
   --set k8sServiceHost=localhost \
   --set k8sServicePort=7445 \
   --set hostFirewall.enabled=true \
-  --set loadBalancer.acceleration=native \
+  --set loadBalancer.acceleration=disabled \
   --set ingressController.enabled=true \
   --set ingressController.default=true \
   --set ingressController.loadbalancerMode=dedicated \
