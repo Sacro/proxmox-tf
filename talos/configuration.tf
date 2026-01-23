@@ -1,12 +1,14 @@
 locals {
-  beelink_nodes = toset([{
+  beelink_combined = toset([])
+
+  beelink_workers = toset([{
     name    = "beelinknode01",
     address = "192.168.15.151",
     }, {
     name    = "beelinknode02",
     address = "192.168.15.152",
     }, {
-    name    = "beelinknode03"
+    name    = "beelinknode03",
     address = "192.168.15.153",
   }])
 
@@ -19,15 +21,11 @@ locals {
 
   proxmox_controlplanes = toset([])
 
-  controlplanes = setunion(local.proxmox_controlplanes, local.beelink_nodes)
+  controlplanes = setunion(local.beelink_combined, local.turingpi_combined)
 
   proxmox_workers = toset([])
 
-  turingpi_workers = toset([{
-    name         = "turingnode01"
-    address      = "192.168.15.91"
-    dhcp_address = "192.168.15.91"
-    }, {
+  turingpi_combined = toset([{
     name         = "turingnode02"
     address      = "192.168.15.92"
     dhcp_address = "192.168.15.92"
@@ -39,6 +37,13 @@ locals {
     name         = "turingnode04"
     address      = "192.168.15.94"
     dhcp_address = "192.168.15.94"
+    },
+  ])
+
+  turingpi_workers = toset([{
+    name         = "turingnode01"
+    address      = "192.168.15.91"
+    dhcp_address = "192.168.15.91"
   }])
 
   # workers = setunion(local.proxmox_workers, local.turingpi_workers)
@@ -452,7 +457,7 @@ resource "talos_machine_secrets" "secrets" {
   }
 }
 
-data "talos_machine_configuration" "beelink_node" {
+data "talos_machine_configuration" "combined" {
   cluster_endpoint = local.cluster_endpoint
   cluster_name     = local.cluster_name
   machine_secrets  = talos_machine_secrets.secrets.machine_secrets
