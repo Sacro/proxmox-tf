@@ -11,11 +11,13 @@ resource "talos_machine_configuration_apply" "beelink_combined" {
   client_configuration        = talos_machine_secrets.secrets.client_configuration
   config_patches = [
     yamlencode(provider::deepmerge::mergo(
-      { machine = {
-        network = {
-          hostname = "${each.value.name}.${local.domain}"
-        }
-      } },
+      {
+        # machine = {
+        #   network = {
+        #     hostname = "${each.value.name}.${local.domain}"
+        #   }
+        # }
+      },
       local.talos_beelink_node_config,
       "append"
     )),
@@ -50,11 +52,13 @@ resource "talos_machine_configuration_apply" "beelink_worker" {
   client_configuration        = talos_machine_secrets.secrets.client_configuration
   config_patches = [
     yamlencode(provider::deepmerge::mergo(
-      { machine = {
-        network = {
-          hostname = "${each.value.name}.${local.domain}"
-        }
-      } },
+      {
+        # machine = {
+        #   network = {
+        #     hostname = "${each.value.name}.${local.domain}"
+        #   }
+        # }
+      },
       local.talos_beelink_node_config,
       "append"
     )),
@@ -94,11 +98,13 @@ resource "talos_machine_configuration_apply" "turingpi_combined" {
   client_configuration        = talos_machine_secrets.secrets.client_configuration
   config_patches = [
     yamlencode(provider::deepmerge::mergo(
-      { machine = {
-        network = {
-          hostname = "${each.value.name}.${local.domain}"
-        }
-      } },
+      {
+        # machine = {
+        #   network = {
+        #     hostname = "${each.value.name}.${local.domain}"
+        #   }
+        # }
+      },
       local.talos_turingpi_worker_config,
       "append"
     )),
@@ -128,11 +134,13 @@ resource "talos_machine_configuration_apply" "turingpi_worker" {
   client_configuration        = talos_machine_secrets.secrets.client_configuration
   config_patches = [
     yamlencode(provider::deepmerge::mergo(
-      { machine = {
-        network = {
-          hostname = "${each.value.name}.${local.domain}"
-        }
-      } },
+      {
+        # machine = {
+        #   network = {
+        #     hostname = "${each.value.name}.${local.domain}"
+        #   }
+        # }
+      },
       local.talos_turingpi_worker_config,
       "append"
     )),
