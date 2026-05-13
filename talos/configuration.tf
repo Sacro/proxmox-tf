@@ -522,18 +522,18 @@ resource "github_repository" "flux" {
   }
 }
 
-resource "github_branch_protection" "flux" {
-  repository_id = github_repository.flux.node_id
-
-  pattern = "main"
-  required_pull_request_reviews {
-    required_approving_review_count = 1
-  }
-  require_signed_commits = true
-  lifecycle {
-    prevent_destroy = true
-  }
-}
+# resource "github_branch_protection" "flux" {
+#   repository_id = github_repository.flux.node_id
+#
+#   pattern = "main"
+#   required_pull_request_reviews {
+#     required_approving_review_count = 1
+#   }
+#   require_signed_commits = true
+#   lifecycle {
+#     prevent_destroy = true
+#   }
+# }
 
 resource "github_repository_deploy_key" "flux" {
   depends_on = [github_repository.flux]
