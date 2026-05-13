@@ -2,11 +2,11 @@ terraform {
   required_providers {
     deepmerge = {
       source  = "isometry/deepmerge"
-      version = "~> 1.0"
+      version = "1.2.1"
     }
     flux = {
       source  = "fluxcd/flux"
-      version = "1.7.6"
+      version = "1.8.7"
     }
     github = {
       source  = "integrations/github"
@@ -22,7 +22,7 @@ terraform {
     }
   }
 
-  required_version = "1.14.6"
+  required_version = "1.15.2"
 }
 
 provider "flux" {

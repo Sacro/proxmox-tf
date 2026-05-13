@@ -65,7 +65,7 @@ provider "registry.terraform.io/integrations/github" {
 
 provider "registry.terraform.io/isometry/deepmerge" {
   version     = "1.2.1"
-  constraints = "~> 1.0, 1.2.1"
+  constraints = "1.2.1"
   hashes = [
     "h1:zWPD5ysWAKAmdXlv+GZtQ8qaLiOId/zENIUXfN+WqUU=",
     "zh:13be4c31971addc10e26a003e22b8867dba41737ffbc9de86ed84555c4a539b7",

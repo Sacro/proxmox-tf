@@ -12,12 +12,12 @@ locals {
     address = "192.168.15.153",
   }])
 
-  hyperv_workers = toset([
-    # {
-    #   name    = "taloshvw01"
-    #   address = "192.168.15.71"
-    # }
-  ])
+  # hyperv_workers = toset([
+  #   # {
+  #   #   name    = "taloshvw01"
+  #   #   address = "192.168.15.71"
+  #   # }
+  # ])
 
   proxmox_controlplanes = toset([])
 
@@ -53,7 +53,7 @@ locals {
   # nameservers = ["2a07:a8c0::32:2151", "2a07:a8c1::32:2151"]
   timeservers = ["time.cloudflare.com"]
 
-  talos_version = "1.12.1"
+  talos_version = "1.13.0"
 
   talos_beelink_node_config = {
     machine = {
@@ -516,7 +516,7 @@ resource "tls_private_key" "flux" {
 resource "github_repository" "flux" {
   name                 = var.github_repository
   vulnerability_alerts = true
-  visibility           = "public"
+  visibility           = "private"
   lifecycle {
     prevent_destroy = true
   }
